@@ -25,12 +25,38 @@ pub enum Event {
     BatteryChanged,
     /// The default audio sink's volume or mute changed.
     AudioChanged,
+    /// A new notification arrived.
+    Notification(Notification),
+    /// An active notification was dismissed.
+    NotificationClosed { id: u32 },
+}
+
+/// A single notification received from the D-Bus notification daemon.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Notification {
+    pub id: u32,
+    /// Name of the sending application (its `.desktop` id or process name).
+    pub app_name: String,
+    /// The notification title.
+    pub summary: String,
+    /// The notification body text.
+    pub body: String,
+    /// Urgency level reported by the sender.
+    pub urgency: Urgency,
+}
+
+/// Urgency level of a notification, per the freedesktop spec.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Urgency {
+    Low,
+    Normal,
+    Critical,
 }
 
 /// A producer for [`Event`]s: a handle to the background thread whose events
 /// are sent on a shared channel.
 pub struct EventProducer {
-    _thread: std::thread::JoinHandle<()>,
+    _thread: Option<std::thread::JoinHandle<()>>,
 }
 
 impl EventProducer {
@@ -39,8 +65,14 @@ impl EventProducer {
         F: FnOnce() + Send + 'static,
     {
         Self {
-            _thread: std::thread::spawn(f),
+            _thread: Some(std::thread::spawn(f)),
         }
+    }
+
+    /// A handle that owns no thread (used for producers that manage their own
+    /// lifecycle, e.g. the notification daemon).
+    fn none() -> Self {
+        Self { _thread: None }
     }
 }
 
@@ -98,4 +130,14 @@ pub fn spawn_audio(tx: Sender<Event>) -> EventProducer {
     EventProducer::spawn(move || {
         crate::services::audio::listen(tx);
     })
+}
+
+/// Spawn the notification daemon, which owns `org.freedesktop.Notifications`
+/// on the session bus and emits [`Event::Notification`] /
+/// [`Event::NotificationClosed`] as notifications arrive.
+pub fn spawn_notifications(tx: Sender<Event>) -> EventProducer {
+    crate::services::notifications::spawn(tx);
+    // The daemon manages its own thread; return a no-op handle so the caller
+    // keeps a uniform producer list.
+    EventProducer::none()
 }
