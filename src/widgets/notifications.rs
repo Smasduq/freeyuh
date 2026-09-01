@@ -24,7 +24,7 @@ pub struct NotificationWidget {
     toast_window: ApplicationWindow,
     toasts_list: Box,
     center_window: ApplicationWindow,
-    center_scroll: ScrolledWindow,
+    center_dropdown: Box,
     center_list: Box,
     history: Vec<Notification>,
 }
@@ -57,28 +57,43 @@ impl NotificationWidget {
         toasts_list.set_width_request(360);
         toast_window.set_child(Some(&toast_full));
 
-        // --- Center window (history, top-right, appears on demand) ---
+        // --- Center window (history, top-right, appears on hover) ---
         let center_window = ApplicationWindow::builder().application(app).build();
         center_window.init_layer_shell();
         center_window.set_layer(Layer::Top);
         center_window.set_anchor(Edge::Top, true);
         center_window.set_anchor(Edge::Right, true);
-        center_window.set_margin(Edge::Top, 40);
-        center_window.set_margin(Edge::Right, 12);
+        center_window.set_margin(Edge::Top, 38);
+        center_window.set_margin(Edge::Right, 8);
         center_window.set_keyboard_mode(KeyboardMode::None);
         center_window.set_exclusive_zone(0);
         center_window.set_default_size(360, -1);
         center_window.add_css_class("notif-center");
-        let center_list = Box::new(Orientation::Vertical, 8);
-        center_list.set_halign(Align::End);
+
+        // Dropdown container: a header plus the scrollable notification list.
+        let dropdown = Box::new(Orientation::Vertical, 0);
+        dropdown.add_css_class("notif-dropdown");
+
+        let header = Box::new(Orientation::Horizontal, 0);
+        header.add_css_class("notif-header");
+        let title = Label::new(Some("Notifications"));
+        title.add_css_class("notif-header-title");
+        title.set_halign(Align::Start);
+        title.set_xalign(0.0);
+        header.append(&title);
+        dropdown.append(&header);
+
+        let center_list = Box::new(Orientation::Vertical, 4);
+        center_list.set_halign(Align::Fill);
         let scroll = ScrolledWindow::builder()
             .child(&center_list)
             .hscrollbar_policy(gtk4::PolicyType::Never)
             .vscrollbar_policy(gtk4::PolicyType::Automatic)
             .build();
         scroll.set_max_content_height(480);
-        center_window.set_child(Some(&scroll));
+        dropdown.append(&scroll);
         center_list.set_width_request(360);
+        center_window.set_child(Some(&dropdown));
 
         // Ensure the center window starts hidden.
         center_window.hide();
@@ -99,7 +114,7 @@ impl NotificationWidget {
                 toast_window,
                 toasts_list,
                 center_window,
-                center_scroll: scroll,
+                center_dropdown: dropdown,
                 center_list,
                 history: Vec::new(),
             },
@@ -117,9 +132,9 @@ impl NotificationWidget {
         self.center_window.hide();
     }
 
-    /// Access to the center scroll widget so hover wiring can attach to it.
-    pub fn center_scroll(&self) -> &ScrolledWindow {
-        &self.center_scroll
+    /// Access to the center dropdown so hover wiring can attach to it.
+    pub fn center_dropdown(&self) -> &gtk4::Box {
+        &self.center_dropdown
     }
 
     /// Handle a notification-related event.

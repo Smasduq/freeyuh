@@ -109,6 +109,22 @@ const CSS: &str = r#"
 .notif-center {
     background: transparent;
 }
+.notif-dropdown {
+    background: rgba(20, 20, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.notif-header {
+    padding: 4px 8px 8px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.notif-header-title {
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff;
+}
 .notif-center .notif-toast {
     background: rgba(24, 24, 24, 0.95);
 }

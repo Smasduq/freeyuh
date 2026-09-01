@@ -57,7 +57,7 @@ pub fn build(app: &Application) {
     // Notification widget: toast + center, plus the bell button.
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app);
     right.append(&bell);
-    let center_scroll = notif_widget.center_scroll().clone();
+    let center_dropdown = notif_widget.center_dropdown().clone();
 
     root.append(&workspaces_box);
     root.append(&center);
@@ -103,7 +103,11 @@ pub fn build(app: &Application) {
         let tx = tx.clone();
         move |_| {
             let tx = tx.clone();
+            let hide_source_cb = hide_source.clone();
             let source = glib::timeout_add_local(HIDE_DELAY, move || {
+                // This source removes itself once it fires; drop the stored id
+                // so a later enter never removes a dead source.
+                hide_source_cb.set(None);
                 let _ = tx.send(Event::HideNotificationCenter);
                 glib::ControlFlow::Break
             });
@@ -127,14 +131,16 @@ pub fn build(app: &Application) {
         let tx = tx.clone();
         move |_| {
             let tx = tx.clone();
+            let hide_source_cb = hide_source.clone();
             let source = glib::timeout_add_local(HIDE_DELAY, move || {
+                hide_source_cb.set(None);
                 let _ = tx.send(Event::HideNotificationCenter);
                 glib::ControlFlow::Break
             });
             hide_source.set(Some(source));
         }
     });
-    center_scroll.add_controller(center_motion);
+    center_dropdown.add_controller(center_motion);
 
     // Spawn the producers.
     let _producers: Vec<EventProducer> = vec![
