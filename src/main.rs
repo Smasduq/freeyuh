@@ -1,8 +1,6 @@
-use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::os::unix::net::UnixStream;
 use std::sync::mpsc::Sender;
-use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use chrono::Local;
@@ -133,28 +131,26 @@ fn hypr_event_listener(tx: Sender<String>) {
 // GTK UI
 // ---------------------------------------------------------------------------
 struct WorkspaceButton {
-    id: i64,
-    has_windows: bool,
     button: Button,
 }
 
 impl WorkspaceButton {
-    fn new(id: i64, has_windows: bool, active: bool) -> Self {
+    fn new(id: i64, has_windows: bool, active: bool, free: bool) -> Self {
         let btn = Button::new();
-        let label = Label::new(Some(&id.to_string()));
-        btn.set_child(Some(&label));
         btn.add_css_class("ws");
-        if has_windows {
+        if free {
+            btn.add_css_class("free");
+        } else if has_windows {
             btn.add_css_class("occupied");
         }
         if active {
             btn.add_css_class("active");
         }
-        Self {
-            id,
-            has_windows,
-            button: btn,
-        }
+        let target = id;
+        btn.connect_clicked(move |_| {
+            hypr_switch(target);
+        });
+        Self { button: btn }
     }
 }
 
@@ -216,13 +212,8 @@ fn build_ui(app: &Application) {
 
     load_css();
 
-    // ---- Shared bar state (main-thread owned) ----
-    let state = Arc::new(Mutex::new(BarState {
-        workspace_buttons: HashMap::new(),
-    }));
-
     // Initial render (best-effort; never panics)
-    refresh_workspaces(&workspaces_box, &state);
+    refresh_workspaces(&workspaces_box);
 
     // ---- Clock + system info refresh ----
     let clock2 = clock_label.clone();
@@ -236,17 +227,14 @@ fn build_ui(app: &Application) {
     // ---- Hyprland events -> main thread ----
     let (tx, rx) = std::sync::mpsc::channel::<String>();
     let wb_main = workspaces_box.clone();
-    let state_main = state.clone();
     glib::timeout_add_local(Duration::from_millis(300), move || {
         loop {
             match rx.try_recv() {
                 Ok(msg) => {
-                    if let Some(id) = msg.strip_prefix("active ") {
-                        if let Ok(n) = id.parse::<i64>() {
-                            set_active_workspace(&wb_main, &state_main, n);
-                        }
-                    } else if msg == "reload" {
-                        refresh_workspaces(&wb_main, &state_main);
+                    // Rebuild on any workspace change so that occupied
+                    // workspaces and the free slot always reflect reality.
+                    if msg.starts_with("active ") || msg == "reload" {
+                        refresh_workspaces(&wb_main);
                     }
                 }
                 Err(_) => break,
@@ -260,63 +248,50 @@ fn build_ui(app: &Application) {
     window.present();
 }
 
-struct BarState {
-    workspace_buttons: HashMap<i64, WorkspaceButton>,
-}
-
-impl BarState {
-    fn new() -> Self {
-        Self {
-            workspace_buttons: HashMap::new(),
-        }
-    }
-}
-
-/// (Re)build the workspace buttons 1..=MAX_WS, preserving the active highlight.
-fn refresh_workspaces(container: &gtk4::Box, shared: &Arc<Mutex<BarState>>) {
-    // Clear previous widgets.
+/// (Re)build the workspace list. Shows only workspaces that currently have
+/// windows, plus one "free" circle at the end that opens the next workspace.
+fn refresh_workspaces(container: &gtk4::Box) {
     clear_children(container);
 
-    let occupied: std::collections::HashSet<i64> =
-        hypr_workspaces().into_iter().map(|(id, _)| id).collect();
+    let workspaces = hypr_workspaces();
     let active = hypr_active_workspace();
 
-    let mut st = shared.lock().unwrap();
+    // Only workspace ids that currently have windows.
+    let mut ids: Vec<i64> = workspaces
+        .iter()
+        .filter(|(_, has_windows)| *has_windows)
+        .map(|(id, _)| *id)
+        .collect();
+    ids.sort_unstable();
+    ids.dedup();
 
-    for id in 1..=MAX_WS {
-        let has_windows = occupied.contains(&id);
-        let ws = WorkspaceButton::new(id, has_windows, id == active);
-        let btn = ws.button.clone();
-        btn.connect_clicked(move |_| {
-            hypr_switch(id);
-        });
-        st.workspace_buttons.insert(id, ws);
-        container.append(&btn);
+    for &id in &ids {
+        let ws = WorkspaceButton::new(id, true, id == active, false);
+        container.append(&ws.button);
     }
-}
 
-fn set_active_workspace(container: &gtk4::Box, shared: &Arc<Mutex<BarState>>, active: i64) {
-    let mut st = shared.lock().unwrap();
-    for (id, ws) in st.workspace_buttons.iter_mut() {
-        if *id == active {
-            ws.button.add_css_class("active");
-        } else {
-            ws.button.remove_css_class("active");
-        }
+    // Free slot: the next workspace after the highest one with windows.
+    let next_id = ids.last().map(|last| last + 1).unwrap_or(1);
+    if next_id <= MAX_WS {
+        let free = WorkspaceButton::new(next_id, false, false, true);
+        container.append(&free.button);
     }
-    // Keep widgets in the container in sync (no structural change needed).
-    let _ = container;
 }
 
 fn clear_children(container: &gtk4::Box) {
+    // Collect first, then remove. Removing by index while iterating shifts
+    // the remaining children and leaves some behind (causing duplicates).
     let model = container.observe_children();
-    let n = model.n_items();
-    for i in 0..n {
+    let mut to_remove = Vec::new();
+    for i in 0..model.n_items() {
         if let Some(obj) = model.item(i) {
             if let Ok(w) = obj.downcast::<gtk4::Widget>() {
-                container.remove(&w);
+                to_remove.push(w);
             }
         }
+    }
+    for w in to_remove {
+        container.remove(&w);
     }
 }
 
@@ -386,26 +361,31 @@ const CSS: &str = r#"
 }
 .workspaces button {
     background: transparent;
-    color: #666;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 12px;
-    min-width: 0;
+    border: 2px solid #4a5568;
+    border-radius: 999px;
+    min-width: 9px;
+    min-height: 9px;
+    padding: 0;
+    margin: 0 3px;
 }
 .workspaces button:hover {
-    background: rgba(255,255,255,0.08);
-    color: #fff;
+    border-color: #ffffff;
+    background: rgba(255,255,255,0.10);
+}
+.workspaces button.free {
+    border: 2px dashed #5a6474;
+    opacity: 0.75;
 }
 .workspaces button.occupied {
-    color: #d8dee9;
+    background: #d8dee9;
+    border-color: #d8dee9;
 }
 .workspaces button.active {
     background: #5294e2;
-    color: #fff;
-}
-.workspaces button.active.occupied {
-    background: #5294e2;
-    color: #fff;
+    border-color: #5294e2;
+    border-radius: 999px;
+    min-width: 13px;
+    min-height: 13px;
 }
 .clock {
     padding: 4px 10px;
