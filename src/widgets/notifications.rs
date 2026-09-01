@@ -20,12 +20,11 @@ const TOAST_TIMEOUT_CRITICAL: Duration = Duration::from_secs(15);
 /// The notification display: owns the toast window, the center window and the
 /// shared history. Lives entirely on the main thread.
 pub struct NotificationWidget {
-    /// Held for its lifetime so the toast window stays mapped. The toasts are
-    /// appended to `toasts_list`; this window merely hosts them.
     #[allow(dead_code)]
     toast_window: ApplicationWindow,
     toasts_list: Box,
     center_window: ApplicationWindow,
+    center_scroll: ScrolledWindow,
     center_list: Box,
     history: Vec<Notification>,
 }
@@ -81,6 +80,9 @@ impl NotificationWidget {
         center_window.set_child(Some(&scroll));
         center_list.set_width_request(360);
 
+        // Ensure the center window starts hidden.
+        center_window.hide();
+
         // --- Bell button (in the bar) ---
         let bell = Button::new();
         bell.add_css_class("bell");
@@ -88,14 +90,16 @@ impl NotificationWidget {
         bell.set_tooltip_text(Some("Notifications"));
         bell.set_valign(Align::Center);
 
-        // The toast window must be mapped for toast cards to be visible.
-        toast_window.present();
+        // The toast window is shown on demand when a toast appears and hidden
+        // once the last toast is dismissed, so it never peeks as an empty box.
+        toast_window.hide();
 
         (
             Self {
                 toast_window,
                 toasts_list,
                 center_window,
+                center_scroll: scroll,
                 center_list,
                 history: Vec::new(),
             },
@@ -113,9 +117,9 @@ impl NotificationWidget {
         self.center_window.hide();
     }
 
-    /// Access to the center window so hover wiring can attach to it.
-    pub fn center_window(&self) -> &ApplicationWindow {
-        &self.center_window
+    /// Access to the center scroll widget so hover wiring can attach to it.
+    pub fn center_scroll(&self) -> &ScrolledWindow {
+        &self.center_scroll
     }
 
     /// Handle a notification-related event.
@@ -130,6 +134,8 @@ impl NotificationWidget {
                 self.history.retain(|n| n.id != *id);
                 self.refresh_center();
             }
+            Event::ShowNotificationCenter => self.show_center(),
+            Event::HideNotificationCenter => self.hide_center(),
             _ => {}
         }
     }
@@ -138,15 +144,21 @@ impl NotificationWidget {
     fn present_toast(&mut self, n: &Notification) {
         let card = self.make_toast(n);
         self.toasts_list.append(&card);
+        self.toast_window.present();
 
-        // Auto-dismiss after the timeout, removing this card.
+        // Auto-dismiss after the timeout, removing this card and hiding the
+        // window once it is the last toast standing.
         let toasts_list = self.toasts_list.clone();
+        let toast_window = self.toast_window.clone();
         let timeout = match n.urgency {
             Urgency::Critical => TOAST_TIMEOUT_CRITICAL,
             _ => TOAST_TIMEOUT,
         };
         glib::timeout_add_local(timeout, move || {
             toasts_list.remove(&card);
+            if toasts_list.observe_children().n_items() == 0 {
+                toast_window.hide();
+            }
             glib::ControlFlow::Break
         });
     }
