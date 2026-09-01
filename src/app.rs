@@ -1,6 +1,6 @@
 //! Assembles the top bar UI and wires up its event reactor.
 //!
-//! All producers (Hyprland, clock/system ticks, battery) push an [`Event`]
+//! All producers (Hyprland, clock/system ticks, battery, audio) push an [`Event`]
 //! onto a single channel. A single main-thread reactor drains that channel and
 //! dispatches each event to the relevant widget update.
 
@@ -17,11 +17,11 @@ use crate::events::{Event, EventProducer};
 use crate::style;
 use crate::widgets;
 
-const BAR_HEIGHT: i32 = 34;
+const BAR_HEIGHT: i32 = 36;
 const POLL_INTERVAL: Duration = Duration::from_millis(50);
 /// Delay before the notification center hides after the pointer leaves the
 /// bell or the panel, so the cursor can move between them.
-const HIDE_DELAY: Duration = Duration::from_millis(200);
+const HIDE_DELAY: Duration = Duration::from_millis(250);
 
 /// Build the top layer-shell bar and attach all behaviour.
 pub fn build(app: &Application) {
@@ -35,58 +35,81 @@ pub fn build(app: &Application) {
     window.set_exclusive_zone(BAR_HEIGHT);
     window.set_default_size(-1, BAR_HEIGHT);
 
-    // Root horizontal box holding [workspaces | clock | sysinfo].
+    // Shared event bus: every producer sends into this single channel.
+    let (tx, rx) = mpsc::channel::<Event>();
+
+    // Root horizontal box holding [left | center | right].
     let root = Box::new(Orientation::Horizontal, 0);
     root.add_css_class("bar");
     root.set_halign(Align::Fill);
     window.set_child(Some(&root));
 
-    // Left: workspaces
+    // Left: workspaces and active window title
+    let left = Box::new(Orientation::Horizontal, 4);
+    left.set_halign(Align::Start);
+    left.set_valign(Align::Center);
+    left.set_hexpand(true);
+
     let workspaces_box = widgets::workspace::create();
-    // Center: clock
+    let window_title = widgets::window::create();
+    left.append(&workspaces_box);
+    left.append(&window_title);
+
+    // Center: clock with interactive calendar
     let center = Box::new(Orientation::Horizontal, 0);
     center.set_halign(Align::Center);
     center.set_valign(Align::Center);
-    let clock_label = widgets::clock::create();
-    center.append(&clock_label);
-    // Right: system info
-    let (right, sys_labels) = widgets::sysinfo::create();
-    // Audio service pill, shown at the far right of the system group.
+    center.set_hexpand(true);
+
+    let (clock_pill, clock_label) = widgets::clock::create(app);
+    center.append(&clock_pill);
+
+    // Right: system info, network, audio, notifications
+    let right = Box::new(Orientation::Horizontal, 4);
+    right.set_halign(Align::End);
+    right.set_valign(Align::Center);
+    right.set_hexpand(true);
+
+    let (sys_box, sys_labels) = widgets::sysinfo::create();
+    let (network_btn, network_label) = widgets::network::create(app);
     let audio_label = widgets::audio::create();
+    let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
+
+    right.append(&sys_box);
+    right.append(&network_btn);
     right.append(&audio_label);
-    // Notification widget: toast + center, plus the bell button.
-    let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app);
     right.append(&bell);
+
     let center_dropdown = notif_widget.center_dropdown().clone();
 
-    root.append(&workspaces_box);
+    root.append(&left);
     root.append(&center);
     root.append(&right);
-
-    // Stretch the three sections across the full width.
-    center.set_hexpand(true);
-    workspaces_box.set_hexpand(true);
-    right.set_hexpand(true);
 
     style::load();
 
     // Initial render (best-effort; never panics).
     widgets::workspace::refresh(&workspaces_box);
+    widgets::window::refresh(&window_title);
     widgets::clock::update(&clock_label);
     widgets::sysinfo::update(&sys_labels);
+    widgets::network::refresh(&network_label);
     widgets::audio::refresh(&audio_label);
 
-    // Shared event bus: every producer sends into this single channel.
-    let (tx, rx) = mpsc::channel::<Event>();
-
     // The bell opens the notification center on hover and closes it when the
-    // pointer leaves both the bell and the center window. Hovering never
-    // touches the widget directly; it emits events on the bus and lets the
-    // reactor mutate the widget in its own loop, which avoids panicking when a
-    // GLib signal fires re-entrantly (Rust panics can't unwind through C).
+    // pointer leaves both the bell and the center window.
     let hide_source = Rc::new(Cell::new(None::<glib::SourceId>));
 
-    // Bell: show the center on hover, schedule a hide on leave.
+    // Bell: click or hover to show the center.
+    let tx_click = tx.clone();
+    let hide_source_click = hide_source.clone();
+    bell.connect_clicked(move |_| {
+        if let Some(source) = hide_source_click.take() {
+            source.remove();
+        }
+        let _ = tx_click.send(Event::ShowNotificationCenter);
+    });
+
     let bell_motion = EventControllerMotion::new();
     bell_motion.connect_enter({
         let hide_source = hide_source.clone();
@@ -105,8 +128,6 @@ pub fn build(app: &Application) {
             let tx = tx.clone();
             let hide_source_cb = hide_source.clone();
             let source = glib::timeout_add_local(HIDE_DELAY, move || {
-                // This source removes itself once it fires; drop the stored id
-                // so a later enter never removes a dead source.
                 hide_source_cb.set(None);
                 let _ = tx.send(Event::HideNotificationCenter);
                 glib::ControlFlow::Break
@@ -116,7 +137,7 @@ pub fn build(app: &Application) {
     });
     bell.add_controller(bell_motion);
 
-    // Center window: hide on leave, but cancel the pending hide while hovered.
+    // Center window: cancel hide while hovered, schedule hide on leave.
     let center_motion = EventControllerMotion::new();
     center_motion.connect_enter({
         let hide_source = hide_source.clone();
@@ -142,7 +163,7 @@ pub fn build(app: &Application) {
     });
     center_dropdown.add_controller(center_motion);
 
-    // Spawn the producers.
+    // Spawn the background event producers.
     let _producers: Vec<EventProducer> = vec![
         events::spawn_hyprland(tx.clone()),
         events::spawn_tickers(tx.clone()),
@@ -158,8 +179,10 @@ pub fn build(app: &Application) {
                 Ok(event) => dispatch(
                     event,
                     &workspaces_box,
+                    &window_title,
                     &clock_label,
                     &sys_labels,
+                    &network_label,
                     &audio_label,
                     &mut notif_widget,
                 ),
@@ -177,8 +200,10 @@ pub fn build(app: &Application) {
 fn dispatch(
     event: Event,
     workspaces_box: &gtk4::Box,
+    window_title: &gtk4::Label,
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
+    network_label: &gtk4::Label,
     audio_label: &gtk4::Label,
     notif_widget: &mut widgets::notifications::NotificationWidget,
 ) {
@@ -186,12 +211,18 @@ fn dispatch(
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
             widgets::workspace::refresh(workspaces_box);
         }
+        Event::ActiveWindow(title) => {
+            widgets::window::update(window_title, title.as_deref());
+        }
         Event::ClockTick => widgets::clock::update(clock_label),
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
         Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
+        Event::NetworkChanged => widgets::network::refresh(network_label),
         Event::AudioChanged => widgets::audio::refresh(audio_label),
         Event::Notification(_)
         | Event::NotificationClosed { .. }
+        | Event::ClearAllNotifications
+        | Event::DismissNotification(_)
         | Event::ShowNotificationCenter
         | Event::HideNotificationCenter => {
             notif_widget.handle(&event);
