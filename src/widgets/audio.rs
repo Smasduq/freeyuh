@@ -13,10 +13,12 @@ const VOLUME_STEP: i8 = 5;
 
 /// Creates the audio pill shown on the right side of the bar.
 pub fn create() -> Label {
-    let label = Label::new(Some(" 󰕾 --%"));
+    let label = Label::new(Some("󰕾 --%"));
     label.set_use_markup(true);
     label.add_css_class("sys-item");
     label.add_css_class("audio");
+    label.set_cursor_from_name(Some("pointer"));
+    label.set_valign(gtk4::Align::Center);
 
     // Left click toggles mute.
     let gesture = GestureClick::new();
@@ -50,20 +52,25 @@ pub fn refresh(label: &Label) {
     match audio_svc::query() {
         Some(state) => {
             let icon = audio_svc::icon(&state);
-            // Render the icon glyph larger than the percentage via markup.
-            let text =
-                format!(" <span size=\"large\">{icon}</span> {percent}%", percent = state.volume_percent);
-            label.set_markup(&text);
             if state.muted {
+                label.set_markup(&format!("<span color=\"#fa746f\">{icon}</span> Muted"));
+                label.set_tooltip_text(Some("Audio: Muted (Click to unmute)"));
                 label.add_css_class("muted");
                 label.remove_css_class("unmuted");
             } else {
+                let text = format!("{icon} {percent}%", percent = state.volume_percent);
+                label.set_markup(&text);
+                label.set_tooltip_text(Some(&format!(
+                    "Volume: {percent}% (Scroll to adjust, click to mute)",
+                    percent = state.volume_percent
+                )));
                 label.add_css_class("unmuted");
                 label.remove_css_class("muted");
             }
         }
         None => {
-            label.set_markup(" <span size=\"large\">󰚌</span>");
+            label.set_markup("<span>󰚌</span>");
+            label.set_tooltip_text(Some("Audio: Unavailable"));
         }
     }
 }

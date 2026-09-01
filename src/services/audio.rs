@@ -83,7 +83,11 @@ pub fn change_volume(delta_percent: i8) {
 pub fn listen(tx: Sender<Event>) {
     use std::io::BufRead;
 
-    let mut child = match Command::new("pactl").arg("subscribe").spawn() {
+    let mut child = match Command::new("pactl")
+        .arg("subscribe")
+        .stdout(std::process::Stdio::piped())
+        .spawn()
+    {
         Ok(c) => c,
         Err(_) => return,
     };
