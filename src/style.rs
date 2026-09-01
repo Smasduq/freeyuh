@@ -56,7 +56,7 @@ const CSS: &str = r#"
     padding: 4px 8px;
     background: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 13px;
 }
 .sys-item.bat-icon {
     padding: 4px 6px;
@@ -64,5 +64,12 @@ const CSS: &str = r#"
 }
 .sys-item.bat {
     color: #9ece9e;
+}
+.sys-item.audio {
+    color: #8ab4f8;
+    font-size: 16px;
+}
+.sys-item.audio.muted {
+    color: #e06c75;
 }
 "#;

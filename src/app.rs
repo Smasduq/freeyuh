@@ -46,6 +46,9 @@ pub fn build(app: &Application) {
     center.append(&clock_label);
     // Right: system info
     let (right, sys_labels) = widgets::sysinfo::create();
+    // Audio service pill, shown at the far right of the system group.
+    let audio_label = widgets::audio::create();
+    right.append(&audio_label);
 
     root.append(&workspaces_box);
     root.append(&center);
@@ -62,6 +65,7 @@ pub fn build(app: &Application) {
     widgets::workspace::refresh(&workspaces_box);
     widgets::clock::update(&clock_label);
     widgets::sysinfo::update(&sys_labels);
+    widgets::audio::refresh(&audio_label);
 
     // Shared event bus: every producer sends into this single channel.
     let (tx, rx) = mpsc::channel::<Event>();
@@ -71,13 +75,16 @@ pub fn build(app: &Application) {
         events::spawn_hyprland(tx.clone()),
         events::spawn_tickers(tx.clone()),
         events::spawn_battery(tx.clone()),
+        events::spawn_audio(tx.clone()),
     ];
 
     // Single main-thread reactor: drain the channel and dispatch to widgets.
     glib::timeout_add_local(POLL_INTERVAL, move || {
         loop {
             match rx.recv_timeout(Duration::from_millis(1)) {
-                Ok(event) => dispatch(event, &workspaces_box, &clock_label, &sys_labels),
+                Ok(event) => {
+                    dispatch(event, &workspaces_box, &clock_label, &sys_labels, &audio_label)
+                }
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
                 Err(mpsc::RecvTimeoutError::Disconnected) => return glib::ControlFlow::Break,
             }
@@ -94,6 +101,7 @@ fn dispatch(
     workspaces_box: &gtk4::Box,
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
+    audio_label: &gtk4::Label,
 ) {
     match event {
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
@@ -102,5 +110,6 @@ fn dispatch(
         Event::ClockTick => widgets::clock::update(clock_label),
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
         Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
+        Event::AudioChanged => widgets::audio::refresh(audio_label),
     }
 }

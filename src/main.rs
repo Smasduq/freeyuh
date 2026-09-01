@@ -1,6 +1,7 @@
 mod app;
 mod compositor;
 mod events;
+mod services;
 mod style;
 mod widgets;
 

@@ -23,6 +23,8 @@ pub enum Event {
     SystemTick,
     /// Battery percentage or charging state changed.
     BatteryChanged,
+    /// The default audio sink's volume or mute changed.
+    AudioChanged,
 }
 
 /// A producer for [`Event`]s: a handle to the background thread whose events
@@ -87,5 +89,13 @@ pub fn spawn_battery(tx: Sender<Event>) -> EventProducer {
             }
             std::thread::sleep(std::time::Duration::from_secs(2));
         }
+    })
+}
+
+/// Spawn the audio service producer that emits [`Event::AudioChanged`] on any
+/// volume/mute change on the default output sink.
+pub fn spawn_audio(tx: Sender<Event>) -> EventProducer {
+    EventProducer::spawn(move || {
+        crate::services::audio::listen(tx);
     })
 }
