@@ -29,10 +29,18 @@ pub enum Event {
     Notification(Notification),
     /// An active notification was dismissed.
     NotificationClosed { id: u32 },
+    /// The title of the currently focused window changed.
+    ActiveWindow(Option<String>),
+    /// Network connection state or SSID changed.
+    NetworkChanged,
     /// Show the notification center window.
     ShowNotificationCenter,
     /// Hide the notification center window.
     HideNotificationCenter,
+    /// Clear all notifications from history.
+    ClearAllNotifications,
+    /// Dismiss a specific notification from history.
+    DismissNotification(u32),
 }
 
 /// A single notification received from the D-Bus notification daemon.
@@ -106,6 +114,9 @@ pub fn spawn_tickers(tx: Sender<Event>) -> EventProducer {
             samples += 1;
             if samples % 4 == 0 {
                 let _ = tx.send(Event::SystemTick);
+            }
+            if samples % 6 == 0 {
+                let _ = tx.send(Event::NetworkChanged);
             }
             std::thread::sleep(std::time::Duration::from_secs(1));
         }

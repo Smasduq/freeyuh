@@ -116,10 +116,34 @@ pub fn listen(tx: Sender<Event>) {
                     || line.starts_with("destroyworkspace>>")
                 {
                     let _ = tx.send(Event::WorkspaceListChanged);
+                } else if let Some(rest) = line.strip_prefix("activewindow>>") {
+                    let title = if let Some((_, title)) = rest.split_once(',') {
+                        let trimmed = title.trim();
+                        if trimmed.is_empty() { None } else { Some(trimmed.to_string()) }
+                    } else {
+                        let trimmed = rest.trim();
+                        if trimmed.is_empty() { None } else { Some(trimmed.to_string()) }
+                    };
+                    let _ = tx.send(Event::ActiveWindow(title));
+                } else if line.starts_with("activewindowv2>>") {
+                    let _ = tx.send(Event::ActiveWindow(active_window_title()));
                 }
             }
         }
         std::thread::sleep(Duration::from_millis(500));
+    }
+}
+
+/// Query the title of the currently focused window, if any.
+pub fn active_window_title() -> Option<String> {
+    let out = call("j/activewindow")?;
+    let val: serde_json::Value = serde_json::from_str(&out).ok()?;
+    let title = val.get("title")?.as_str()?;
+    let trimmed = title.trim();
+    if trimmed.is_empty() {
+        None
+    } else {
+        Some(trimmed.to_string())
     }
 }
 

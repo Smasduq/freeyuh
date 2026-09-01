@@ -6,4 +6,5 @@
 //! when its state changes.
 
 pub mod audio;
+pub mod network;
 pub mod notifications;
