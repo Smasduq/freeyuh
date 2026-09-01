@@ -49,6 +49,9 @@ pub fn build(app: &Application) {
     // Audio service pill, shown at the far right of the system group.
     let audio_label = widgets::audio::create();
     right.append(&audio_label);
+    // Notification widget: toast + center, plus the bell button.
+    let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app);
+    right.append(&bell);
 
     root.append(&workspaces_box);
     root.append(&center);
@@ -70,21 +73,35 @@ pub fn build(app: &Application) {
     // Shared event bus: every producer sends into this single channel.
     let (tx, rx) = mpsc::channel::<Event>();
 
+    // The bell toggles the notification center via the event bus.
+    bell.connect_clicked({
+        let tx = tx.clone();
+        move |_| {
+            let _ = tx.send(Event::ToggleNotificationCenter);
+        }
+    });
+
     // Spawn the producers.
     let _producers: Vec<EventProducer> = vec![
         events::spawn_hyprland(tx.clone()),
         events::spawn_tickers(tx.clone()),
         events::spawn_battery(tx.clone()),
         events::spawn_audio(tx.clone()),
+        events::spawn_notifications(tx.clone()),
     ];
 
     // Single main-thread reactor: drain the channel and dispatch to widgets.
     glib::timeout_add_local(POLL_INTERVAL, move || {
         loop {
             match rx.recv_timeout(Duration::from_millis(1)) {
-                Ok(event) => {
-                    dispatch(event, &workspaces_box, &clock_label, &sys_labels, &audio_label)
-                }
+                Ok(event) => dispatch(
+                    event,
+                    &workspaces_box,
+                    &clock_label,
+                    &sys_labels,
+                    &audio_label,
+                    &mut notif_widget,
+                ),
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
                 Err(mpsc::RecvTimeoutError::Disconnected) => return glib::ControlFlow::Break,
             }
@@ -102,6 +119,7 @@ fn dispatch(
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
     audio_label: &gtk4::Label,
+    notif_widget: &mut widgets::notifications::NotificationWidget,
 ) {
     match event {
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
@@ -111,5 +129,8 @@ fn dispatch(
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
         Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
         Event::AudioChanged => widgets::audio::refresh(audio_label),
+        Event::Notification(_) | Event::NotificationClosed { .. } | Event::ToggleNotificationCenter => {
+            notif_widget.handle(&event);
+        }
     }
 }

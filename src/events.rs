@@ -29,6 +29,8 @@ pub enum Event {
     Notification(Notification),
     /// An active notification was dismissed.
     NotificationClosed { id: u32 },
+    /// Toggle the notification center window.
+    ToggleNotificationCenter,
 }
 
 /// A single notification received from the D-Bus notification daemon.

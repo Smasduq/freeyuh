@@ -5,5 +5,6 @@
 
 pub mod audio;
 pub mod clock;
+pub mod notifications;
 pub mod sysinfo;
 pub mod workspace;

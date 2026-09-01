@@ -72,4 +72,50 @@ const CSS: &str = r#"
 .sys-item.audio.muted {
     color: #e06c75;
 }
+.bell {
+    background: transparent;
+    border: none;
+    color: #a8b2c1;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 12px;
+}
+.bell:hover {
+    background: rgba(255, 255, 255, 0.10);
+}
+.notif-toast {
+    background: rgba(30, 30, 30, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: #d8dee9;
+}
+.notif-toast.critical {
+    border-left: 3px solid #e06c75;
+}
+.notif-title {
+    font-weight: bold;
+    font-size: 13px;
+    color: #ffffff;
+}
+.notif-body {
+    font-size: 12px;
+    color: #c6cdd7;
+}
+.notif-app {
+    font-size: 10px;
+    color: #7f8b9b;
+}
+.notif-center {
+    background: transparent;
+}
+.notif-center .notif-toast {
+    background: rgba(24, 24, 24, 0.95);
+}
+.notif-center .history-item {
+    margin: 2px 0;
+}
+.notif-center scrollbar {
+    background: transparent;
+}
 "#;

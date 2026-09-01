@@ -4,15 +4,16 @@
 //! freedesktop notification spec, so this bar is the notification daemon.
 //!
 //! Because a desktop shell (e.g. a Quickshell config) may already own the
-//! name, the connection is requested with `REPLACE_EXISTING` so the bar takes
-//! over and becomes the single notification daemon. Incoming notifications are
-//! forwarded into the unified event bus, where the toast popup and
-//! notification-center widgets subscribe.
+//! name, the connection is built with `replace_existing_names(true)` so the
+//! bar takes over and becomes the single notification daemon. Incoming
+//! notifications are forwarded into the unified event bus, where the toast
+//! popup and notification-center widgets subscribe.
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, mpsc::Sender};
 
-use zbus::{interface, Connection, NameFlag};
+use zbus::zvariant::OwnedValue;
+use zbus::interface;
 
 use crate::events::{Event, Notification, Urgency};
 
@@ -33,8 +34,6 @@ struct Store {
 pub struct NotificationService {
     tx: Sender<Event>,
     store: Store,
-    // Keep the service a "services::notifications" façade for callers.
-    _private: (),
 }
 
 impl NotificationService {
@@ -42,7 +41,6 @@ impl NotificationService {
         Self {
             tx,
             store: Store::default(),
-            _private: (),
         }
     }
 
@@ -51,9 +49,7 @@ impl NotificationService {
         *guard += 1;
         *guard
     }
-}
 
-impl NotificationService {
     fn send(&self, event: Event) {
         let _ = self.tx.send(event);
     }
@@ -64,18 +60,16 @@ impl NotificationService {
     /// Called by clients (e.g. `notify-send`) to post a notification.
     async fn notify(
         &self,
-        #[zbus(signature = "s")] app_name: String,
-        #[zbus(signature = "u")] replaces_id: u32,
-        #[zbus(signature = "s")] _app_icon: String,
-        #[zbus(signature = "s")] summary: String,
-        #[zbus(signature = "s")] body: String,
-        #[zbus(signature = "as")] _actions: Vec<String>,
-        #[zbus(signature = "a{sv}")] hints: zbus::zvariant::OwnedValue,
-        #[zbus(signature = "i")] _expire_timeout: i32,
+        app_name: String,
+        replaces_id: u32,
+        _app_icon: String,
+        summary: String,
+        body: String,
+        _actions: Vec<String>,
+        hints: HashMap<String, OwnedValue>,
+        _expire_timeout: i32,
     ) -> u32 {
-        // A `replaces_id` cherry-picked from an earlier app request bumps the
-        // same notification rather than creating a new one.
-        let mut id = if replaces_id != 0 {
+        let id = if replaces_id != 0 {
             replaces_id
         } else {
             self.next_id()
@@ -91,19 +85,9 @@ impl NotificationService {
             urgency,
         };
 
-        // Store (id -> notification) so CloseNotification can resolve it.
         {
             let mut active = self.store.active.lock().unwrap();
-            if replaces_id != 0 {
-                // Re-replacing keeps the slot; but keep id unique by using the
-                // stored id if present.
-                if let Some(existing) = active.get(&id) {
-                    id = existing.id;
-                }
-                active.insert(id, notif.clone());
-            } else {
-                active.insert(id, notif.clone());
-            }
+            active.insert(id, notif.clone());
         }
 
         self.send(Event::Notification(notif));
@@ -140,20 +124,15 @@ impl NotificationService {
 }
 
 /// Parse the `urgency` hint (0=low, 1=normal, 2=critical, default normal).
-fn parse_urgency(hints: &zbus::zvariant::OwnedValue) -> Urgency {
-    // hints serialize as a dictionary (`a{sv}`). Look up "urgency".
-    if let Ok(dict) = hints.try_clone().downcast::<HashMap<String, zbus::zvariant::OwnedValue>>() {
-        if let Some(v) = dict.get("urgency") {
-            if let Ok(byte) = v.try_clone().downcast::<u8>() {
-                return match byte {
-                    0 => Urgency::Low,
-                    2 => Urgency::Critical,
-                    _ => Urgency::Normal,
-                };
-            }
-        }
+fn parse_urgency(hints: &HashMap<String, OwnedValue>) -> Urgency {
+    match hints.get("urgency") {
+        Some(value) => match u8::try_from(value.clone()) {
+            Ok(0) => Urgency::Low,
+            Ok(2) => Urgency::Critical,
+            _ => Urgency::Normal,
+        },
+        None => Urgency::Normal,
     }
-    Urgency::Normal
 }
 
 /// Spawn the notification daemon on a dedicated thread with its own async
@@ -166,33 +145,29 @@ pub fn spawn(tx: Sender<Event>) {
             .build()
             .expect("failed to build notification runtime");
         rt.block_on(async move {
-            let conn = match Connection::session().await {
-                Ok(c) => c,
+            let service = NotificationService::new(tx);
+            let builder = zbus::connection::Builder::session().ok();
+            let Some(builder) = builder else {
+                eprintln!("notifications: no session bus");
+                return;
+            };
+            let builder = match builder.name(SERVICE_NAME).and_then(|b| {
+                b.replace_existing_names(true)
+                    .serve_at(OBJECT_PATH, service)
+            }) {
+                Ok(b) => b,
                 Err(e) => {
-                    eprintln!("notifications: no session bus: {e}");
+                    eprintln!("notifications: could not configure service: {e}");
                     return;
                 }
             };
-            if let Err(e) = conn
-                .request_name(SERVICE_NAME, NameFlag::ReplaceExisting | NameFlag::AllowReplacement)
-                .await
-            {
-                eprintln!("notifications: could not acquire {SERVICE_NAME}: {e}");
-                return;
+            match builder.build().await {
+                Ok(_conn) => {
+                    // Keep the daemon alive indefinitely.
+                    std::future::pending::<()>().await;
+                }
+                Err(e) => eprintln!("notifications: could not acquire {SERVICE_NAME}: {e}"),
             }
-
-            let service = NotificationService::new(tx);
-            if let Err(e) = conn
-                .object_server()
-                .at(OBJECT_PATH, service)
-                .await
-            {
-                eprintln!("notifications: failed to register service: {e}");
-                return;
-            }
-
-            // Keep the daemon alive indefinitely.
-            std::future::pending::<()>().await;
         });
     });
 }
