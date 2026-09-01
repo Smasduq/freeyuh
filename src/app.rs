@@ -5,8 +5,11 @@
 //! dispatches each event to the relevant widget update.
 
 use gtk4::prelude::*;
-use gtk4::{Align, Application, ApplicationWindow, Box, Orientation};
+use gtk4::{Align, Application, ApplicationWindow, Box, EventControllerMotion, Orientation};
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
+use std::cell::Cell;
+use std::cell::RefCell;
+use std::rc::Rc;
 use std::sync::mpsc;
 use std::time::Duration;
 
@@ -50,8 +53,9 @@ pub fn build(app: &Application) {
     let audio_label = widgets::audio::create();
     right.append(&audio_label);
     // Notification widget: toast + center, plus the bell button.
-    let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app);
+    let (notif_widget, bell) = widgets::notifications::NotificationWidget::new(app);
     right.append(&bell);
+    let notif = Rc::new(RefCell::new(notif_widget));
 
     root.append(&workspaces_box);
     root.append(&center);
@@ -73,13 +77,61 @@ pub fn build(app: &Application) {
     // Shared event bus: every producer sends into this single channel.
     let (tx, rx) = mpsc::channel::<Event>();
 
-    // The bell toggles the notification center via the event bus.
-    bell.connect_clicked({
-        let tx = tx.clone();
-        move |_| {
-            let _ = tx.send(Event::ToggleNotificationCenter);
+    // The bell opens the notification center on hover and closes it when the
+    // pointer leaves both the bell and the center window. A short hide delay
+    // lets the cursor move from the bell into the panel without it closing.
+    let hide_source = Rc::new(Cell::new(None::<glib::SourceId>));
+    let center_window = notif.borrow().center_window().clone();
+
+    // Bell: show the center on hover, schedule a hide on leave.
+    let bell_motion = EventControllerMotion::new();
+    bell_motion.connect_enter({
+        let hide_source = hide_source.clone();
+        let notif = notif.clone();
+        move |_, _, _| {
+            if let Some(source) = hide_source.take() {
+                source.remove();
+            }
+            notif.borrow_mut().show_center();
         }
     });
+    bell_motion.connect_leave({
+        let hide_source = hide_source.clone();
+        let notif = notif.clone();
+        move |_| {
+            let notif = notif.clone();
+            let source = glib::timeout_add_local(Duration::from_millis(200), move || {
+                notif.borrow_mut().hide_center();
+                glib::ControlFlow::Break
+            });
+            hide_source.set(Some(source));
+        }
+    });
+    bell.add_controller(bell_motion);
+
+    // Center window: hide on leave, but cancel the pending hide while hovered.
+    let center_motion = EventControllerMotion::new();
+    center_motion.connect_enter({
+        let hide_source = hide_source.clone();
+        move |_, _, _| {
+            if let Some(source) = hide_source.take() {
+                source.remove();
+            }
+        }
+    });
+    center_motion.connect_leave({
+        let hide_source = hide_source.clone();
+        let notif = notif.clone();
+        move |_| {
+            let notif = notif.clone();
+            let source = glib::timeout_add_local(Duration::from_millis(200), move || {
+                notif.borrow_mut().hide_center();
+                glib::ControlFlow::Break
+            });
+            hide_source.set(Some(source));
+        }
+    });
+    center_window.add_controller(center_motion);
 
     // Spawn the producers.
     let _producers: Vec<EventProducer> = vec![
@@ -100,7 +152,7 @@ pub fn build(app: &Application) {
                     &clock_label,
                     &sys_labels,
                     &audio_label,
-                    &mut notif_widget,
+                    &notif,
                 ),
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
                 Err(mpsc::RecvTimeoutError::Disconnected) => return glib::ControlFlow::Break,
@@ -119,7 +171,7 @@ fn dispatch(
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
     audio_label: &gtk4::Label,
-    notif_widget: &mut widgets::notifications::NotificationWidget,
+    notif: &Rc<RefCell<widgets::notifications::NotificationWidget>>,
 ) {
     match event {
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
@@ -129,8 +181,8 @@ fn dispatch(
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
         Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
         Event::AudioChanged => widgets::audio::refresh(audio_label),
-        Event::Notification(_) | Event::NotificationClosed { .. } | Event::ToggleNotificationCenter => {
-            notif_widget.handle(&event);
+        Event::Notification(_) | Event::NotificationClosed { .. } => {
+            notif.borrow_mut().handle(&event);
         }
     }
 }

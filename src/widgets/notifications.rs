@@ -3,7 +3,7 @@
 //! The bar is the notification daemon (see `services::notifications`). When a
 //! notification arrives it is forwarded here as an [`Event::Notification`]; the
 //! widget shows a transient toast in the top-right and logs it into a scrollable
-//! center. A bell button in the bar toggles the center window.
+//! center. Hovering the bell button in the bar shows the center window.
 
 use gtk4::prelude::*;
 use gtk4::{Align, Application, ApplicationWindow, Box, Button, Label, Orientation, ScrolledWindow};
@@ -28,7 +28,6 @@ pub struct NotificationWidget {
     center_window: ApplicationWindow,
     center_list: Box,
     history: Vec<Notification>,
-    center_visible: bool,
 }
 
 impl NotificationWidget {
@@ -99,20 +98,24 @@ impl NotificationWidget {
                 center_window,
                 center_list,
                 history: Vec::new(),
-                center_visible: false,
             },
             bell,
         )
     }
 
-    /// Toggle the notification center window's visibility.
-    pub fn toggle_center(&mut self) {
-        self.center_visible = !self.center_visible;
-        if self.center_visible {
-            self.center_window.present();
-        } else {
-            self.center_window.hide();
-        }
+    /// Show the notification center window.
+    pub fn show_center(&mut self) {
+        self.center_window.present();
+    }
+
+    /// Hide the notification center window.
+    pub fn hide_center(&mut self) {
+        self.center_window.hide();
+    }
+
+    /// Access to the center window so hover wiring can attach to it.
+    pub fn center_window(&self) -> &ApplicationWindow {
+        &self.center_window
     }
 
     /// Handle a notification-related event.
@@ -127,7 +130,6 @@ impl NotificationWidget {
                 self.history.retain(|n| n.id != *id);
                 self.refresh_center();
             }
-            Event::ToggleNotificationCenter => self.toggle_center(),
             _ => {}
         }
     }
