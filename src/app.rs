@@ -65,7 +65,7 @@ pub fn build(app: &Application) {
     let (clock_pill, clock_label) = widgets::clock::create(app);
     center.append(&clock_pill);
 
-    // Right: system info, network, audio, notifications
+    // Right: system info, network, bluetooth, audio, notifications
     let right = Box::new(Orientation::Horizontal, 4);
     right.set_halign(Align::End);
     right.set_valign(Align::Center);
@@ -74,11 +74,13 @@ pub fn build(app: &Application) {
 
     let (sys_box, sys_labels) = widgets::sysinfo::create();
     let (network_btn, network_label) = widgets::network::create(app);
+    let (bt_btn, bt_label) = widgets::bluetooth::create(app);
     let audio_label = widgets::audio::create();
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
 
     right.append(&sys_box);
     right.append(&network_btn);
+    right.append(&bt_btn);
     right.append(&audio_label);
     right.append(&bell);
 
@@ -96,6 +98,7 @@ pub fn build(app: &Application) {
     widgets::clock::update(&clock_label);
     widgets::sysinfo::update(&sys_labels);
     widgets::network::refresh(&network_label);
+    widgets::bluetooth::refresh(&bt_label);
     widgets::audio::refresh(&audio_label);
 
     // The bell opens the notification center on hover and closes it when the
@@ -185,6 +188,7 @@ pub fn build(app: &Application) {
                     &clock_label,
                     &sys_labels,
                     &network_label,
+                    &bt_label,
                     &audio_label,
                     &mut notif_widget,
                 ),
@@ -206,6 +210,7 @@ fn dispatch(
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
     network_label: &gtk4::Label,
+    bt_label: &gtk4::Label,
     audio_label: &gtk4::Label,
     notif_widget: &mut widgets::notifications::NotificationWidget,
 ) {
@@ -220,6 +225,7 @@ fn dispatch(
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
         Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
         Event::NetworkChanged => widgets::network::refresh(network_label),
+        Event::BluetoothChanged => widgets::bluetooth::refresh(bt_label),
         Event::AudioChanged => widgets::audio::refresh(audio_label),
         Event::Notification(_)
         | Event::NotificationClosed { .. }
