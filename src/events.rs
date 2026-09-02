@@ -49,6 +49,12 @@ pub enum Event {
     ShowLauncher,
     /// Hide Spotlight app launcher.
     HideLauncher,
+    /// Toggle Power and Session menu.
+    TogglePowerMenu,
+    /// Show Power and Session menu.
+    ShowPowerMenu,
+    /// Hide Power and Session menu.
+    HidePowerMenu,
     /// Reload application CSS theme.
     ReloadStyle,
     /// Clear all notifications from history.

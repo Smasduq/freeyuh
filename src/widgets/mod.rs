@@ -6,6 +6,7 @@
 pub mod clock;
 pub mod launcher;
 pub mod notifications;
+pub mod powermenu;
 pub mod quicksettings;
 pub mod sysinfo;
 pub mod window;

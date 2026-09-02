@@ -76,6 +76,30 @@ pub fn spawn_server(tx: Sender<Event>) {
                     "hide-launcher" => {
                         let _ = tx_cl.send(Event::HideLauncher);
                     }
+                    "toggle-powermenu" | "powermenu" | "power" | "session" => {
+                        let _ = tx_cl.send(Event::TogglePowerMenu);
+                    }
+                    "show-powermenu" => {
+                        let _ = tx_cl.send(Event::ShowPowerMenu);
+                    }
+                    "hide-powermenu" => {
+                        let _ = tx_cl.send(Event::HidePowerMenu);
+                    }
+                    "poweroff" | "shutdown" => {
+                        crate::widgets::powermenu::PowerAction::PowerOff.execute();
+                    }
+                    "reboot" | "restart" => {
+                        crate::widgets::powermenu::PowerAction::Reboot.execute();
+                    }
+                    "suspend" => {
+                        crate::widgets::powermenu::PowerAction::Suspend.execute();
+                    }
+                    "lock" => {
+                        crate::widgets::powermenu::PowerAction::Lock.execute();
+                    }
+                    "logout" | "exit" => {
+                        crate::widgets::powermenu::PowerAction::Logout.execute();
+                    }
                     "reload-style" | "reload" => {
                         let _ = tx_cl.send(Event::ReloadStyle);
                     }

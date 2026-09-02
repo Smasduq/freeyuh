@@ -77,6 +77,7 @@ pub fn build(app: &Application) {
     let (qs_btn, qs_labels, qs_window, qs_reload) = widgets::quicksettings::create(app);
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
     let (mut launcher_widget, _launcher_win) = widgets::launcher::LauncherWidget::new(app);
+    let (mut powermenu_widget, _powermenu_win) = widgets::powermenu::PowerMenuWidget::new(app);
 
     right.append(&sys_box);
     right.append(&qs_btn);
@@ -190,6 +191,7 @@ pub fn build(app: &Application) {
                     &qs_rel_cl,
                     &mut notif_widget,
                     &mut launcher_widget,
+                    &mut powermenu_widget,
                 ),
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
                 Err(mpsc::RecvTimeoutError::Disconnected) => return glib::ControlFlow::Break,
@@ -213,6 +215,7 @@ fn dispatch(
     qs_reload: &Rc<dyn Fn()>,
     notif_widget: &mut widgets::notifications::NotificationWidget,
     launcher_widget: &mut widgets::launcher::LauncherWidget,
+    powermenu_widget: &mut widgets::powermenu::PowerMenuWidget,
 ) {
     match event {
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
@@ -231,6 +234,9 @@ fn dispatch(
         Event::ToggleLauncher => launcher_widget.toggle(),
         Event::ShowLauncher => launcher_widget.show(),
         Event::HideLauncher => launcher_widget.hide(),
+        Event::TogglePowerMenu => powermenu_widget.toggle(),
+        Event::ShowPowerMenu => powermenu_widget.show(),
+        Event::HidePowerMenu => powermenu_widget.hide(),
         Event::ReloadStyle => style::load(),
         Event::Notification(_)
         | Event::NotificationClosed { .. }

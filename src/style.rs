@@ -1108,4 +1108,126 @@ switch.qs-switch:checked slider {
 .launcher-scrolled-window scrollbar slider:hover {
     background: rgba(164, 209, 180, 0.35);
 }
+
+/* =========================================================================
+   POWER & SESSION MENU HUD
+   ========================================================================= */
+
+.powermenu-backdrop {
+    background: rgba(4, 7, 5, 0.72);
+}
+
+.powermenu-card {
+    background: rgba(14, 19, 16, 0.96);
+    border: 1px solid rgba(164, 209, 180, 0.25);
+    border-radius: 28px;
+    padding: 36px 44px;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.powermenu-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #dee8df;
+}
+
+.powermenu-subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6e7870;
+    margin-top: 2px;
+}
+
+.powermenu-actions-row {
+    margin-top: 10px;
+}
+
+.powermenu-tile {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 24px 18px;
+    min-width: 106px;
+    min-height: 124px;
+    transition: all 180ms ease;
+}
+
+.powermenu-tile-icon {
+    font-size: 34px;
+    margin-bottom: 4px;
+    color: #8d9990;
+    transition: all 180ms ease;
+}
+
+.powermenu-tile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+.powermenu-tile-key {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6e7870;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    padding: 2px 6px;
+    margin-top: 4px;
+}
+
+/* Specific Action Color Accents */
+.action-poweroff.selected,
+.action-poweroff:hover {
+    background: rgba(250, 116, 111, 0.18);
+    border-color: rgba(250, 116, 111, 0.6);
+    box-shadow: 0 0 24px rgba(250, 116, 111, 0.35);
+}
+.action-poweroff.selected .powermenu-tile-icon,
+.action-poweroff:hover .powermenu-tile-icon {
+    color: #fa746f;
+}
+
+.action-reboot.selected,
+.action-reboot:hover {
+    background: rgba(240, 178, 122, 0.18);
+    border-color: rgba(240, 178, 122, 0.6);
+    box-shadow: 0 0 24px rgba(240, 178, 122, 0.35);
+}
+.action-reboot.selected .powermenu-tile-icon,
+.action-reboot:hover .powermenu-tile-icon {
+    color: #f0b27a;
+}
+
+.action-suspend.selected,
+.action-suspend:hover {
+    background: rgba(133, 193, 233, 0.18);
+    border-color: rgba(133, 193, 233, 0.6);
+    box-shadow: 0 0 24px rgba(133, 193, 233, 0.35);
+}
+.action-suspend.selected .powermenu-tile-icon,
+.action-suspend:hover .powermenu-tile-icon {
+    color: #85c1e9;
+}
+
+.action-lock.selected,
+.action-lock:hover {
+    background: rgba(164, 209, 180, 0.18);
+    border-color: rgba(164, 209, 180, 0.6);
+    box-shadow: 0 0 24px rgba(164, 209, 180, 0.35);
+}
+.action-lock.selected .powermenu-tile-icon,
+.action-lock:hover .powermenu-tile-icon {
+    color: #a4d1b4;
+}
+
+.action-logout.selected,
+.action-logout:hover {
+    background: rgba(187, 143, 206, 0.18);
+    border-color: rgba(187, 143, 206, 0.6);
+    box-shadow: 0 0 24px rgba(187, 143, 206, 0.35);
+}
+.action-logout.selected .powermenu-tile-icon,
+.action-logout:hover .powermenu-tile-icon {
+    color: #bb8fce;
+}
 "#;
