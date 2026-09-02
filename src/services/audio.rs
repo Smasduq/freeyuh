@@ -67,6 +67,13 @@ pub fn icon(state: &AudioState) -> &'static str {
     }
 }
 
+/// Set the output volume to an absolute percentage (0..=100).
+pub fn set_volume(percent: u8) {
+    let level = (percent as f32).clamp(0.0, 100.0) / 100.0;
+    let arg = format!("{:.2}", level);
+    let _ = run("wpctl", &["set-volume", DEFAULT_SINK, &arg]);
+}
+
 /// Change the output volume by `delta` percent. A positive value raises it and
 /// a negative value lowers it.
 pub fn change_volume(delta_percent: i8) {
