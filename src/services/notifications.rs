@@ -152,7 +152,8 @@ pub fn spawn(tx: Sender<Event>) {
                 return;
             };
             let builder = match builder.name(SERVICE_NAME).and_then(|b| {
-                b.replace_existing_names(true)
+                b.allow_name_replacements(true)
+                    .replace_existing_names(true)
                     .serve_at(OBJECT_PATH, service)
             }) {
                 Ok(b) => b,
