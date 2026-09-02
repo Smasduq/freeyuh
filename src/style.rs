@@ -428,18 +428,16 @@ const CSS: &str = r#"
 
 /* Hero QuickSettings Module */
 .wifi-hero-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    padding: 12px 14px;
-    margin-bottom: 2px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 4px 12px 4px;
+    margin-bottom: 4px;
 }
 
 .wifi-hero-icon-box {
-    min-width: 42px;
-    min-height: 42px;
-    background: rgba(164, 209, 180, 0.15);
-    border-radius: 13px;
+    background: transparent;
+    border: none;
     margin-right: 4px;
 }
 
@@ -524,39 +522,42 @@ switch.wifi-switch:checked slider {
     font-weight: 700;
     letter-spacing: 0.8px;
     color: #6e7870;
-    margin: 8px 4px 2px 4px;
+    margin: 8px 4px 4px 4px;
 }
 
-/* Network Items (M3 Expressive Tiles) */
+/* Network Items (Flat Caelestia List) */
 .wifi-list-box {
     margin-top: 2px;
 }
 
 .wifi-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 10px 12px;
-    margin: 3px 0;
-    transition: all 180ms ease;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin: 2px 0;
+    transition: all 150ms ease;
 }
 
 .wifi-item:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(164, 209, 180, 0.25);
+    background: rgba(255, 255, 255, 0.06);
 }
 
 .wifi-item.connected {
-    background: linear-gradient(135deg, rgba(164, 209, 180, 0.13), rgba(122, 217, 188, 0.04));
-    border: 1px solid rgba(164, 209, 180, 0.38);
-    border-left: 4px solid #a4d1b4;
+    background: transparent;
+    border: none;
+}
+
+.wifi-item.connected .wifi-item-name {
+    color: #a4d1b4;
+    font-weight: 700;
 }
 
 .wifi-icon-chip {
-    min-width: 38px;
-    min-height: 38px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 11px;
+    background: transparent;
+    border: none;
+    min-width: 24px;
+    min-height: 24px;
 }
 
 .wifi-item-icon {
@@ -564,32 +565,25 @@ switch.wifi-switch:checked slider {
 }
 
 .wifi-item-name {
-    color: #ffffff;
-    font-weight: 600;
+    color: #dee8df;
+    font-weight: 500;
     font-size: 13px;
 }
 
-.wifi-connected-badge {
-    background: #a4d1b4;
-    color: #0b0f0c;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 6px;
-    border-radius: 4px;
+.wifi-connected-icon {
+    color: #a4d1b4;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.wifi-saved-badge {
-    background: rgba(255, 255, 255, 0.08);
-    color: #a4aea5;
-    font-size: 9px;
-    font-weight: 500;
-    padding: 1px 6px;
-    border-radius: 4px;
+.wifi-saved-icon {
+    color: #6e7870;
+    font-size: 12px;
 }
 
 .wifi-lock-icon {
     color: #6e7870;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .wifi-item-signal {
@@ -599,35 +593,33 @@ switch.wifi-switch:checked slider {
 }
 
 .wifi-connect-btn {
-    background: #a4d1b4;
+    background: transparent;
     border: none;
-    border-radius: 10px;
-    color: #0b0f0c;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 5px 14px;
+    border-radius: 8px;
+    color: #8d9990;
+    font-size: 16px;
+    padding: 4px 8px;
     transition: all 150ms ease;
 }
 
 .wifi-connect-btn:hover {
-    background: #bbf0cb;
-    box-shadow: 0 0 12px rgba(164, 209, 180, 0.4);
+    background: rgba(164, 209, 180, 0.18);
+    color: #a4d1b4;
 }
 
 .wifi-disconnect-btn {
-    background: rgba(250, 116, 111, 0.12);
-    border: 1px solid rgba(250, 116, 111, 0.28);
-    border-radius: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
     color: #fa746f;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 5px 12px;
+    font-size: 16px;
+    padding: 4px 8px;
     transition: all 150ms ease;
 }
 
 .wifi-disconnect-btn:hover {
-    background: rgba(250, 116, 111, 0.25);
-    border-color: #fa746f;
+    background: rgba(250, 116, 111, 0.18);
+    color: #fa746f;
 }
 
 /* Password Floating Box */

@@ -402,13 +402,15 @@ fn populate_list(
         meta_row.set_valign(Align::Center);
 
         if net.is_connected {
-            let conn_badge = Label::new(Some("Connected"));
-            conn_badge.add_css_class("wifi-connected-badge");
-            meta_row.append(&conn_badge);
+            let conn_icon = Label::new(Some("󰄬"));
+            conn_icon.add_css_class("wifi-connected-icon");
+            conn_icon.set_tooltip_text(Some("Active Connection"));
+            meta_row.append(&conn_icon);
         } else if net.is_saved {
-            let saved_badge = Label::new(Some("Saved"));
-            saved_badge.add_css_class("wifi-saved-badge");
-            meta_row.append(&saved_badge);
+            let saved_icon = Label::new(Some("󰋑"));
+            saved_icon.add_css_class("wifi-saved-icon");
+            saved_icon.set_tooltip_text(Some("Saved Network"));
+            meta_row.append(&saved_icon);
         }
 
         let sig_label = Label::new(Some(&format!("{}%", net.signal)));
@@ -427,14 +429,15 @@ fn populate_list(
         info_box.append(&meta_row);
         row.append(&info_box);
 
-        // Action button
+        // Action button (icon only)
         let action_btn = Button::new();
         action_btn.set_cursor_from_name(Some("pointer"));
         action_btn.set_valign(Align::Center);
 
         if net.is_connected {
-            action_btn.set_label("Disconnect");
+            action_btn.set_label("󰚥");
             action_btn.add_css_class("wifi-disconnect-btn");
+            action_btn.set_tooltip_text(Some("Disconnect"));
 
             let ssid = net.ssid.clone();
             let status_lbl = status_label.clone();
@@ -462,8 +465,8 @@ fn populate_list(
                         Ok(res) => {
                             match res {
                                 Ok(_) => {
-                                    status_lbl_cb.set_text("Disconnected");
-                                    subtitle_lbl_cb.set_text("Disconnected");
+                                    status_lbl_cb.set_visible(false);
+                                    subtitle_lbl_cb.set_text("Scanning...");
                                     refresh(&pill_lbl_cb);
                                     let nets = network::scan_wifi();
                                     populate_list(
@@ -487,8 +490,9 @@ fn populate_list(
             });
             row.append(&action_btn);
         } else {
-            action_btn.set_label("Connect");
+            action_btn.set_label("󰅂");
             action_btn.add_css_class("wifi-connect-btn");
+            action_btn.set_tooltip_text(Some("Connect"));
 
             let password_container = Box::new(Orientation::Horizontal, 8);
             password_container.add_css_class("wifi-password-box");
@@ -544,8 +548,8 @@ fn populate_list(
                             Ok(res) => {
                                 match res {
                                     Ok(_) => {
-                                        status_lbl_cb.set_text(&format!("Connected to {ssid_cb}"));
-                                        subtitle_lbl_cb.set_text(&format!("Connected · {ssid_cb}"));
+                                        status_lbl_cb.set_visible(false);
+                                        subtitle_lbl_cb.set_text(&ssid_cb);
                                         refresh(&pill_lbl_cb);
                                         let nets = network::scan_wifi();
                                         populate_list(
@@ -603,8 +607,8 @@ fn populate_list(
                         Ok(res) => {
                             match res {
                                 Ok(_) => {
-                                    status_lbl_cb.set_text(&format!("Connected to {ssid_cb}"));
-                                    subtitle_lbl_cb.set_text(&format!("Connected · {ssid_cb}"));
+                                    status_lbl_cb.set_visible(false);
+                                    subtitle_lbl_cb.set_text(&ssid_cb);
                                     refresh(&pill_lbl_cb);
                                     let nets = network::scan_wifi();
                                     populate_list(
