@@ -622,57 +622,138 @@ switch.wifi-switch:checked slider {
     color: #fa746f;
 }
 
-/* Password Floating Box */
-.wifi-password-box {
-    background: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(164, 209, 180, 0.2);
-    border-radius: 12px;
-    padding: 8px 10px;
-    margin-top: 6px;
+/* --- Wi-Fi Full-Panel Authentication Overlay --- */
+.wifi-auth-view {
+    padding: 6px 12px 14px 12px;
 }
 
-.wifi-password-entry {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    color: #dee8df;
-    font-size: 12px;
-    padding: 6px 10px;
+.wifi-auth-nav {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 4px;
 }
 
-.wifi-password-entry:focus {
-    border-color: #a4d1b4;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.wifi-join-btn {
-    background: #a4d1b4;
-    border: none;
-    border-radius: 8px;
-    color: #0b0f0c;
-    font-weight: 700;
-    font-size: 11px;
-    padding: 6px 14px;
-    transition: all 150ms ease;
-}
-
-.wifi-join-btn:hover {
-    background: #bbf0cb;
-}
-
-.wifi-cancel-btn {
+.wifi-auth-back-btn {
     background: transparent;
     border: none;
-    color: #6e7870;
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 6px;
+    border-radius: 999px;
+    color: #dee8df;
+    font-size: 18px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
     transition: all 150ms ease;
 }
 
-.wifi-cancel-btn:hover {
-    color: #dee8df;
+.wifi-auth-back-btn:hover {
     background: rgba(255, 255, 255, 0.1);
+    color: #a4d1b4;
+}
+
+.wifi-auth-nav-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #dee8df;
+}
+
+.wifi-auth-hero-icon {
+    font-size: 38px;
+    color: #a4d1b4;
+    margin-bottom: 4px;
+}
+
+.wifi-auth-ssid {
+    font-size: 17px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.wifi-auth-subtitle {
+    font-size: 12px;
+    color: #8d9990;
+    font-weight: 500;
+}
+
+.wifi-auth-input-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 12px 14px;
+    margin: 6px 0;
+}
+
+.wifi-auth-input-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #6e7870;
+    margin-bottom: 4px;
+}
+
+.wifi-auth-entry {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #dee8df;
+    font-size: 13px;
+    padding: 8px 12px;
+    transition: all 150ms ease;
+}
+
+.wifi-auth-entry:focus {
+    border-color: #a4d1b4;
+    background: rgba(0, 0, 0, 0.55);
+    box-shadow: 0 0 0 1px rgba(164, 209, 180, 0.5);
+}
+
+.wifi-auth-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+}
+
+.wifi-auth-status.error {
+    color: #fa746f;
+}
+
+.wifi-auth-status.connecting {
+    color: #a4d1b4;
+}
+
+.wifi-auth-actions {
+    margin-top: 10px;
+}
+
+.wifi-auth-cancel-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: #dee8df;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 16px;
+    transition: all 150ms ease;
+}
+
+.wifi-auth-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.wifi-auth-connect-btn {
+    background: #a4d1b4;
+    border: none;
+    border-radius: 12px;
+    color: #0b0f0c;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 16px;
+    transition: all 150ms ease;
+}
+
+.wifi-auth-connect-btn:hover {
+    background: #bbf0cb;
+    box-shadow: 0 0 14px rgba(164, 209, 180, 0.45);
 }
 
 /* Empty / Scanning states */

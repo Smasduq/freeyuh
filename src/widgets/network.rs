@@ -10,10 +10,10 @@ use gtk4::pango::EllipsizeMode;
 use gtk4::prelude::*;
 use gtk4::{
     Align, Application, ApplicationWindow, Box, Button, EventControllerMotion, Label, Orientation,
-    PasswordEntry, ScrolledWindow, Switch,
+    PasswordEntry, ScrolledWindow, Stack, StackTransitionType, Switch,
 };
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::sync::mpsc;
 use std::time::Duration;
@@ -46,14 +46,27 @@ pub fn create(app: &Application) -> (Button, Label) {
     wifi_window.set_margin(Edge::Right, 60);
     wifi_window.set_keyboard_mode(KeyboardMode::OnDemand);
     wifi_window.set_exclusive_zone(0);
-    wifi_window.set_default_size(410, 530);
+    wifi_window.set_default_size(410, 520);
     wifi_window.add_css_class("wifi-window");
 
-    let dropdown = Box::new(Orientation::Vertical, 10);
+    let dropdown = Box::new(Orientation::Vertical, 0);
     dropdown.add_css_class("wifi-dropdown");
     dropdown.set_width_request(410);
 
-    // --- Hero QuickSettings Tile Header ---
+    // Main view stack (switches between "list" and "auth" full-panel view)
+    let stack = Stack::new();
+    stack.set_transition_type(StackTransitionType::SlideLeftRight);
+    stack.set_transition_duration(220);
+    stack.set_vexpand(true);
+
+    // ==========================================
+    // 1. LIST VIEW (Hero + Scrolled Network List)
+    // ==========================================
+    let list_view = Box::new(Orientation::Vertical, 8);
+    list_view.add_css_class("wifi-list-view");
+    list_view.set_vexpand(true);
+
+    // --- Hero Header ---
     let hero_card = Box::new(Orientation::Horizontal, 12);
     hero_card.add_css_class("wifi-hero-card");
     hero_card.set_valign(Align::Center);
@@ -104,23 +117,23 @@ pub fn create(app: &Application) -> (Button, Label) {
     wifi_switch.set_valign(Align::Center);
     hero_card.append(&wifi_switch);
 
-    dropdown.append(&hero_card);
+    list_view.append(&hero_card);
 
     // Status feedback banner
     let status_label = Label::new(None);
     status_label.add_css_class("wifi-status-banner");
     status_label.set_visible(false);
     status_label.set_halign(Align::Center);
-    dropdown.append(&status_label);
+    list_view.append(&status_label);
 
     // Section title
     let section_header = Label::new(Some("AVAILABLE NETWORKS"));
     section_header.add_css_class("wifi-section-header");
     section_header.set_halign(Align::Start);
-    dropdown.append(&section_header);
+    list_view.append(&section_header);
 
     // Network list inside ScrolledWindow
-    let list_box = Box::new(Orientation::Vertical, 6);
+    let list_box = Box::new(Orientation::Vertical, 4);
     list_box.add_css_class("wifi-list-box");
     list_box.set_halign(Align::Fill);
     list_box.set_vexpand(true);
@@ -131,13 +144,229 @@ pub fn create(app: &Application) -> (Button, Label) {
         .vscrollbar_policy(gtk4::PolicyType::Automatic)
         .build();
     scroll.set_min_content_height(380);
-    scroll.set_max_content_height(580);
+    scroll.set_max_content_height(540);
     scroll.set_vexpand(true);
     scroll.add_css_class("wifi-scrolled-window");
-    dropdown.append(&scroll);
+    list_view.append(&scroll);
+
+    stack.add_named(&list_view, Some("list"));
+
+    // ==========================================
+    // 2. AUTH VIEW (Full-Panel Password Overlay)
+    // ==========================================
+    let auth_view = Box::new(Orientation::Vertical, 14);
+    auth_view.add_css_class("wifi-auth-view");
+    auth_view.set_vexpand(true);
+
+    // Top navigation bar
+    let auth_nav = Box::new(Orientation::Horizontal, 10);
+    auth_nav.add_css_class("wifi-auth-nav");
+    auth_nav.set_valign(Align::Center);
+
+    let back_btn = Button::new();
+    back_btn.set_label("󰁍");
+    back_btn.add_css_class("wifi-auth-back-btn");
+    back_btn.set_cursor_from_name(Some("pointer"));
+    back_btn.set_tooltip_text(Some("Back to networks"));
+    auth_nav.append(&back_btn);
+
+    let auth_nav_title = Label::new(Some("Connect to Wi-Fi"));
+    auth_nav_title.add_css_class("wifi-auth-nav-title");
+    auth_nav_title.set_halign(Align::Start);
+    auth_nav_title.set_hexpand(true);
+    auth_nav.append(&auth_nav_title);
+
+    auth_view.append(&auth_nav);
+
+    // Hero center section
+    let auth_hero = Box::new(Orientation::Vertical, 8);
+    auth_hero.set_halign(Align::Center);
+    auth_hero.set_valign(Align::Center);
+    auth_hero.set_margin_top(16);
+    auth_hero.set_margin_bottom(12);
+
+    let auth_icon = Label::new(None);
+    auth_icon.set_use_markup(true);
+    auth_icon.set_markup("<span font=\"36\" color=\"#a4d1b4\">󰤨</span>");
+    auth_icon.add_css_class("wifi-auth-hero-icon");
+    auth_hero.append(&auth_icon);
+
+    let auth_ssid_label = Label::new(None);
+    auth_ssid_label.add_css_class("wifi-auth-ssid");
+    auth_ssid_label.set_ellipsize(EllipsizeMode::End);
+    auth_hero.append(&auth_ssid_label);
+
+    let auth_subtitle = Label::new(Some("Enter network password to connect"));
+    auth_subtitle.add_css_class("wifi-auth-subtitle");
+    auth_hero.append(&auth_subtitle);
+
+    auth_view.append(&auth_hero);
+
+    // Input card
+    let auth_input_card = Box::new(Orientation::Vertical, 6);
+    auth_input_card.add_css_class("wifi-auth-input-card");
+
+    let auth_input_label = Label::new(Some("PASSWORD"));
+    auth_input_label.add_css_class("wifi-auth-input-label");
+    auth_input_label.set_halign(Align::Start);
+    auth_input_card.append(&auth_input_label);
+
+    let auth_pass_entry = PasswordEntry::new();
+    auth_pass_entry.set_placeholder_text(Some("Enter password..."));
+    auth_pass_entry.set_show_peek_icon(true);
+    auth_pass_entry.add_css_class("wifi-auth-entry");
+    auth_input_card.append(&auth_pass_entry);
+
+    auth_view.append(&auth_input_card);
+
+    // Auth error / progress message
+    let auth_status = Label::new(None);
+    auth_status.add_css_class("wifi-auth-status");
+    auth_status.set_visible(false);
+    auth_status.set_halign(Align::Center);
+    auth_view.append(&auth_status);
+
+    // Action buttons (Cancel / Connect)
+    let auth_actions = Box::new(Orientation::Horizontal, 10);
+    auth_actions.add_css_class("wifi-auth-actions");
+    auth_actions.set_halign(Align::Fill);
+    auth_actions.set_margin_top(12);
+
+    let auth_cancel_btn = Button::new();
+    auth_cancel_btn.set_label("Cancel");
+    auth_cancel_btn.add_css_class("wifi-auth-cancel-btn");
+    auth_cancel_btn.set_hexpand(true);
+    auth_cancel_btn.set_cursor_from_name(Some("pointer"));
+    auth_actions.append(&auth_cancel_btn);
+
+    let auth_connect_btn = Button::new();
+    auth_connect_btn.set_label("Connect");
+    auth_connect_btn.add_css_class("wifi-auth-connect-btn");
+    auth_connect_btn.set_hexpand(true);
+    auth_connect_btn.set_cursor_from_name(Some("pointer"));
+    auth_actions.append(&auth_connect_btn);
+
+    auth_view.append(&auth_actions);
+
+    stack.add_named(&auth_view, Some("auth"));
+    dropdown.append(&stack);
 
     wifi_window.set_child(Some(&dropdown));
     wifi_window.hide();
+
+    // Target SSID state for authentication
+    let current_target_ssid = Rc::new(RefCell::new(String::new()));
+
+    // Back & Cancel navigation
+    {
+        let stack_back = stack.clone();
+        let auth_status_back = auth_status.clone();
+        let pass_entry_back = auth_pass_entry.clone();
+        back_btn.connect_clicked(move |_| {
+            auth_status_back.set_visible(false);
+            pass_entry_back.set_text("");
+            stack_back.set_visible_child_name("list");
+        });
+    }
+    {
+        let stack_cancel = stack.clone();
+        let auth_status_cancel = auth_status.clone();
+        let pass_entry_cancel = auth_pass_entry.clone();
+        auth_cancel_btn.connect_clicked(move |_| {
+            auth_status_cancel.set_visible(false);
+            pass_entry_cancel.set_text("");
+            stack_cancel.set_visible_child_name("list");
+        });
+    }
+
+    // Connect handler in Auth View
+    {
+        let target_ssid_cl = current_target_ssid.clone();
+        let pass_entry_join = auth_pass_entry.clone();
+        let auth_status_join = auth_status.clone();
+        let stack_join = stack.clone();
+        let pill_label_join = label.clone();
+        let list_box_join = list_box.clone();
+        let subtitle_join = subtitle.clone();
+        let status_label_join = status_label.clone();
+
+        let handle_auth_connect = Rc::new(move || {
+            let ssid = target_ssid_cl.borrow().clone();
+            let password = pass_entry_join.text().to_string();
+            if ssid.is_empty() {
+                return;
+            }
+
+            auth_status_join.set_text(&format!("Connecting to {ssid}..."));
+            auth_status_join.remove_css_class("error");
+            auth_status_join.add_css_class("connecting");
+            auth_status_join.set_visible(true);
+
+            let (tx, rx) = mpsc::channel();
+            let ssid_thread = ssid.clone();
+            std::thread::spawn(move || {
+                let res = network::connect_wifi(&ssid_thread, Some(&password));
+                let _ = tx.send(res);
+            });
+
+            let auth_status_cb = auth_status_join.clone();
+            let stack_cb = stack_join.clone();
+            let pill_label_cb = pill_label_join.clone();
+            let list_box_cb = list_box_join.clone();
+            let subtitle_cb = subtitle_join.clone();
+            let status_label_cb = status_label_join.clone();
+            let pass_entry_clear = pass_entry_join.clone();
+            let current_target_clear = target_ssid_cl.clone();
+
+            glib::timeout_add_local(Duration::from_millis(50), move || {
+                match rx.try_recv() {
+                    Ok(res) => {
+                        match res {
+                            Ok(_) => {
+                                auth_status_cb.set_visible(false);
+                                pass_entry_clear.set_text("");
+                                subtitle_cb.set_text(&ssid);
+                                refresh(&pill_label_cb);
+                                stack_cb.set_visible_child_name("list");
+
+                                let nets = network::scan_wifi();
+                                populate_list(
+                                    &list_box_cb,
+                                    &nets,
+                                    &status_label_cb,
+                                    &pill_label_cb,
+                                    &subtitle_cb,
+                                    &stack_cb,
+                                    &pass_entry_clear,
+                                    &auth_status_cb,
+                                    &current_target_clear,
+                                );
+                            }
+                            Err(e) => {
+                                auth_status_cb.set_text(&format!("Failed: {e}"));
+                                auth_status_cb.remove_css_class("connecting");
+                                auth_status_cb.add_css_class("error");
+                                auth_status_cb.set_visible(true);
+                            }
+                        }
+                        glib::ControlFlow::Break
+                    }
+                    Err(mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
+                    Err(mpsc::TryRecvError::Disconnected) => glib::ControlFlow::Break,
+                }
+            });
+        });
+
+        let conn_action = handle_auth_connect.clone();
+        auth_connect_btn.connect_clicked(move |_| {
+            conn_action();
+        });
+
+        let conn_enter = handle_auth_connect.clone();
+        auth_pass_entry.connect_activate(move |_| {
+            conn_enter();
+        });
+    }
 
     // Wire up panel refresh logic
     let reload_list = {
@@ -146,6 +375,10 @@ pub fn create(app: &Application) -> (Button, Label) {
         let pill_label = label.clone();
         let wifi_switch = wifi_switch.clone();
         let subtitle = subtitle.clone();
+        let stack = stack.clone();
+        let auth_pass_entry = auth_pass_entry.clone();
+        let auth_status = auth_status.clone();
+        let current_target_ssid = current_target_ssid.clone();
 
         Rc::new(move || {
             let is_enabled = network::wifi_enabled();
@@ -204,6 +437,11 @@ pub fn create(app: &Application) -> (Button, Label) {
             let status_label_cb = status_label.clone();
             let pill_label_cb = pill_label.clone();
             let subtitle_cb = subtitle.clone();
+            let stack_cb = stack.clone();
+            let auth_pass_cb = auth_pass_entry.clone();
+            let auth_status_cb = auth_status.clone();
+            let current_target_cb = current_target_ssid.clone();
+
             glib::timeout_add_local(Duration::from_millis(50), move || {
                 match rx.try_recv() {
                     Ok(networks) => {
@@ -221,6 +459,10 @@ pub fn create(app: &Application) -> (Button, Label) {
                             &status_label_cb,
                             &pill_label_cb,
                             &subtitle_cb,
+                            &stack_cb,
+                            &auth_pass_cb,
+                            &auth_status_cb,
+                            &current_target_cb,
                         );
                         glib::ControlFlow::Break
                     }
@@ -328,13 +570,17 @@ pub fn create(app: &Application) -> (Button, Label) {
     (button, label)
 }
 
-/// Populates `list_box` with Caelestia/M3-styled Wi-Fi network cards.
+/// Populates `list_box` with flat Caelestia/M3 Wi-Fi items.
 fn populate_list(
     list_box: &Box,
     networks: &[WifiNetwork],
     status_label: &Label,
     pill_label: &Label,
     subtitle_label: &Label,
+    stack: &Stack,
+    auth_pass_entry: &PasswordEntry,
+    auth_status: &Label,
+    current_target_ssid: &Rc<RefCell<String>>,
 ) {
     clear_children(list_box);
 
@@ -363,17 +609,14 @@ fn populate_list(
     }
 
     for net in networks {
-        let item_card = Box::new(Orientation::Vertical, 6);
+        let item_card = Box::new(Orientation::Horizontal, 12);
         item_card.add_css_class("wifi-item");
+        item_card.set_valign(Align::Center);
         if net.is_connected {
             item_card.add_css_class("connected");
         }
 
-        // Main content row
-        let row = Box::new(Orientation::Horizontal, 12);
-        row.set_valign(Align::Center);
-
-        // Left squircle icon container
+        // Left bare signal icon
         let icon_chip = Box::new(Orientation::Horizontal, 0);
         icon_chip.add_css_class("wifi-icon-chip");
         icon_chip.set_valign(Align::Center);
@@ -385,7 +628,7 @@ fn populate_list(
         icon_label.set_markup(&format!("<span color=\"{icon_color}\">{icon_str}</span>"));
         icon_label.add_css_class("wifi-item-icon");
         icon_chip.append(&icon_label);
-        row.append(&icon_chip);
+        item_card.append(&icon_chip);
 
         // Network info column (SSID + badges)
         let info_box = Box::new(Orientation::Vertical, 3);
@@ -427,7 +670,7 @@ fn populate_list(
         }
 
         info_box.append(&meta_row);
-        row.append(&info_box);
+        item_card.append(&info_box);
 
         // Action button (icon only)
         let action_btn = Button::new();
@@ -444,6 +687,10 @@ fn populate_list(
             let pill_lbl = pill_label.clone();
             let subtitle_lbl = subtitle_label.clone();
             let list_b = list_box.clone();
+            let stack_cl = stack.clone();
+            let auth_pass_cl = auth_pass_entry.clone();
+            let auth_status_cl = auth_status.clone();
+            let current_target_cl = current_target_ssid.clone();
 
             action_btn.connect_clicked(move |_| {
                 status_lbl.set_text(&format!("Disconnecting from {ssid}..."));
@@ -460,6 +707,11 @@ fn populate_list(
                 let pill_lbl_cb = pill_lbl.clone();
                 let subtitle_lbl_cb = subtitle_lbl.clone();
                 let list_b_cb = list_b.clone();
+                let stack_cb = stack_cl.clone();
+                let auth_pass_cb = auth_pass_cl.clone();
+                let auth_status_cb = auth_status_cl.clone();
+                let current_target_cb = current_target_cl.clone();
+
                 glib::timeout_add_local(Duration::from_millis(50), move || {
                     match rx.try_recv() {
                         Ok(res) => {
@@ -475,6 +727,10 @@ fn populate_list(
                                         &status_lbl_cb,
                                         &pill_lbl_cb,
                                         &subtitle_lbl_cb,
+                                        &stack_cb,
+                                        &auth_pass_cb,
+                                        &auth_status_cb,
+                                        &current_target_cb,
                                     );
                                 }
                                 Err(e) => {
@@ -488,42 +744,22 @@ fn populate_list(
                     }
                 });
             });
-            row.append(&action_btn);
+            item_card.append(&action_btn);
         } else {
             action_btn.set_label("󰅂");
             action_btn.add_css_class("wifi-connect-btn");
             action_btn.set_tooltip_text(Some("Connect"));
 
-            let password_container = Box::new(Orientation::Horizontal, 8);
-            password_container.add_css_class("wifi-password-box");
-            password_container.set_visible(false);
-
-            let pass_entry = PasswordEntry::new();
-            pass_entry.set_placeholder_text(Some("Password..."));
-            pass_entry.add_css_class("wifi-password-entry");
-            pass_entry.set_hexpand(true);
-            password_container.append(&pass_entry);
-
-            let join_btn = Button::new();
-            join_btn.set_label("Join");
-            join_btn.add_css_class("wifi-join-btn");
-            join_btn.set_cursor_from_name(Some("pointer"));
-            password_container.append(&join_btn);
-
-            let cancel_btn = Button::new();
-            cancel_btn.set_label("✕");
-            cancel_btn.add_css_class("wifi-cancel-btn");
-            cancel_btn.set_cursor_from_name(Some("pointer"));
-            password_container.append(&cancel_btn);
-
-            // Connect action
             let ssid = net.ssid.clone();
             let is_saved = net.is_saved;
             let status_lbl = status_label.clone();
             let pill_lbl = pill_label.clone();
             let subtitle_lbl = subtitle_label.clone();
             let list_b = list_box.clone();
-            let pass_box = password_container.clone();
+            let stack_cl = stack.clone();
+            let auth_pass_cl = auth_pass_entry.clone();
+            let auth_status_cl = auth_status.clone();
+            let current_target_cl = current_target_ssid.clone();
 
             action_btn.connect_clicked(move |_| {
                 if is_saved || !is_secured {
@@ -543,6 +779,11 @@ fn populate_list(
                     let pill_lbl_cb = pill_lbl.clone();
                     let subtitle_lbl_cb = subtitle_lbl.clone();
                     let list_b_cb = list_b.clone();
+                    let stack_cb = stack_cl.clone();
+                    let auth_pass_cb = auth_pass_cl.clone();
+                    let auth_status_cb = auth_status_cl.clone();
+                    let current_target_cb = current_target_cl.clone();
+
                     glib::timeout_add_local(Duration::from_millis(50), move || {
                         match rx.try_recv() {
                             Ok(res) => {
@@ -558,6 +799,10 @@ fn populate_list(
                                             &status_lbl_cb,
                                             &pill_lbl_cb,
                                             &subtitle_lbl_cb,
+                                            &stack_cb,
+                                            &auth_pass_cb,
+                                            &auth_status_cb,
+                                            &current_target_cb,
                                         );
                                     }
                                     Err(e) => {
@@ -571,78 +816,39 @@ fn populate_list(
                         }
                     });
                 } else {
-                    // Reveal password box
-                    pass_box.set_visible(true);
-                }
-            });
+                    // Switch to full-panel auth view!
+                    *current_target_cl.borrow_mut() = ssid.clone();
+                    auth_pass_cl.set_text("");
+                    auth_status_cl.set_visible(false);
 
-            // Join with password
-            let ssid_join = net.ssid.clone();
-            let status_lbl_join = status_label.clone();
-            let pill_lbl_join = pill_label.clone();
-            let subtitle_lbl_join = subtitle_label.clone();
-            let list_b_join = list_box.clone();
-            let pass_entry_cl = pass_entry.clone();
-
-            join_btn.connect_clicked(move |_| {
-                let password = pass_entry_cl.text().to_string();
-                status_lbl_join.set_text(&format!("Connecting to {ssid_join}..."));
-                status_lbl_join.set_visible(true);
-
-                let ssid_cl = ssid_join.clone();
-                let (tx, rx) = mpsc::channel();
-
-                std::thread::spawn(move || {
-                    let res = network::connect_wifi(&ssid_cl, Some(&password));
-                    let _ = tx.send(res);
-                });
-
-                let ssid_cb = ssid_join.clone();
-                let status_lbl_cb = status_lbl_join.clone();
-                let pill_lbl_cb = pill_lbl_join.clone();
-                let subtitle_lbl_cb = subtitle_lbl_join.clone();
-                let list_b_cb = list_b_join.clone();
-                glib::timeout_add_local(Duration::from_millis(50), move || {
-                    match rx.try_recv() {
-                        Ok(res) => {
-                            match res {
-                                Ok(_) => {
-                                    status_lbl_cb.set_visible(false);
-                                    subtitle_lbl_cb.set_text(&ssid_cb);
-                                    refresh(&pill_lbl_cb);
-                                    let nets = network::scan_wifi();
-                                    populate_list(
-                                        &list_b_cb,
-                                        &nets,
-                                        &status_lbl_cb,
-                                        &pill_lbl_cb,
-                                        &subtitle_lbl_cb,
-                                    );
-                                }
-                                Err(e) => {
-                                    status_lbl_cb.set_text(&format!("Failed: {e}"));
+                    // Update auth view hero text
+                    if let Some(auth_view_w) = stack_cl.child_by_name("auth") {
+                        if let Ok(auth_box) = auth_view_w.downcast::<Box>() {
+                            let model = auth_box.observe_children();
+                            for i in 0..model.n_items() {
+                                if let Some(obj) = model.item(i) {
+                                    if let Ok(b) = obj.downcast::<Box>() {
+                                        let b_children = b.observe_children();
+                                        for j in 0..b_children.n_items() {
+                                            if let Some(child_obj) = b_children.item(j) {
+                                                if let Ok(lbl) = child_obj.downcast::<Label>() {
+                                                    if lbl.has_css_class("wifi-auth-ssid") {
+                                                        lbl.set_text(&ssid);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                            glib::ControlFlow::Break
                         }
-                        Err(mpsc::TryRecvError::Empty) => glib::ControlFlow::Continue,
-                        Err(mpsc::TryRecvError::Disconnected) => glib::ControlFlow::Break,
                     }
-                });
+
+                    stack_cl.set_visible_child_name("auth");
+                    auth_pass_cl.grab_focus();
+                }
             });
-
-            let pass_box_cancel = password_container.clone();
-            cancel_btn.connect_clicked(move |_| {
-                pass_box_cancel.set_visible(false);
-            });
-
-            row.append(&action_btn);
-            item_card.append(&row);
-            item_card.append(&password_container);
-        }
-
-        if net.is_connected {
-            item_card.append(&row);
+            item_card.append(&action_btn);
         }
 
         list_box.append(&item_card);
