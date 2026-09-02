@@ -49,6 +49,7 @@ pub fn build(app: &Application) {
     left.set_halign(Align::Start);
     left.set_valign(Align::Center);
     left.set_hexpand(true);
+    left.set_margin_start(8);
 
     let workspaces_box = widgets::workspace::create();
     let window_title = widgets::window::create();
@@ -69,6 +70,7 @@ pub fn build(app: &Application) {
     right.set_halign(Align::End);
     right.set_valign(Align::Center);
     right.set_hexpand(true);
+    right.set_margin_end(8);
 
     let (sys_box, sys_labels) = widgets::sysinfo::create();
     let (network_btn, network_label) = widgets::network::create(app);

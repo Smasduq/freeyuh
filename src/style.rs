@@ -147,22 +147,21 @@ const CSS: &str = r#"
     background: rgba(164, 209, 180, 0.2);
 }
 
-/* --- System Resource Pills --- */
+/* --- System Resource Items --- */
 .sysinfo-group {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 999px;
-    padding: 2px 6px;
-    margin: 4px 2px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0 4px;
 }
 
 .sys-item {
-    font-weight: 600;
+    background: transparent;
+    border: none;
     color: #dee8df;
-    padding: 2px 6px;
-    border-radius: 999px;
+    padding: 0px 5px;
     font-size: 12px;
-    transition: all 150ms ease;
+    font-weight: 500;
 }
 
 .sys-item.cpu {
@@ -207,23 +206,22 @@ const CSS: &str = r#"
     font-weight: bold;
 }
 
-/* --- Network Pill (Status Bar) --- */
+/* --- Network Icon (Status Bar) --- */
 .network-pill {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 999px;
-    padding: 3px 9px;
-    margin: 4px 2px;
-    transition: all 180ms ease;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 6px;
+    margin: 4px 1px;
+    transition: all 150ms ease;
 }
 
 .network-pill:hover {
-    background: rgba(255, 255, 255, 0.10);
-    border-color: rgba(164, 209, 180, 0.35);
+    background: rgba(255, 255, 255, 0.09);
 }
 
 .network-pill.connected {
-    border-color: rgba(164, 209, 180, 0.22);
+    border: none;
 }
 
 .network-label {
@@ -231,21 +229,21 @@ const CSS: &str = r#"
     color: #9cebcc;
 }
 
-/* --- Audio Pill --- */
+/* --- Audio Icon (Status Bar) --- */
 .sys-item.audio {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 999px;
-    padding: 3px 10px;
-    margin: 4px 2px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 6px;
+    margin: 4px 1px;
     color: #86dcce;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
+    transition: all 150ms ease;
 }
 
 .sys-item.audio:hover {
     background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(164, 209, 180, 0.25);
 }
 
 .sys-item.audio.muted {
@@ -254,25 +252,24 @@ const CSS: &str = r#"
 
 /* --- Notification Bell --- */
 .bell {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 999px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
     color: #a4aea5;
     font-size: 14px;
-    padding: 3px 9px;
-    margin: 4px 2px 4px 4px;
+    padding: 3px 6px;
+    margin: 4px 2px 4px 1px;
     transition: all 150ms ease;
 }
 
 .bell:hover {
-    background: rgba(255, 255, 255, 0.10);
-    border-color: rgba(164, 209, 180, 0.25);
+    background: rgba(255, 255, 255, 0.09);
     color: #dee8df;
 }
 
 .bell.has-unread {
-    background: rgba(164, 209, 180, 0.15);
-    border-color: rgba(164, 209, 180, 0.35);
+    background: transparent;
+    border: none;
     color: #a4d1b4;
 }
 
