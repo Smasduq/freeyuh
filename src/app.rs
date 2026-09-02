@@ -63,7 +63,7 @@ pub fn build(app: &Application) {
     center.set_valign(Align::Center);
     center.set_hexpand(true);
 
-    let (clock_pill, clock_label) = widgets::clock::create(app);
+    let (clock_pill, clock_label, dash_handles) = widgets::clock::create(app);
     center.append(&clock_pill);
 
     // Right: system info, unified quicksettings (network/bluetooth/audio), notifications
@@ -100,6 +100,10 @@ pub fn build(app: &Application) {
     widgets::quicksettings::refresh_bluetooth(&qs_labels);
     widgets::quicksettings::refresh_audio(&qs_labels);
     widgets::quicksettings::refresh_battery(&qs_labels);
+
+    // Dashboard (clock popover) needs a shared handle for the reactor to update
+    // its clock, weather and system bars on ticks / weather events.
+    let dash_fetch_id = dash_handles.clone();
 
     // The bell opens the notification center on hover and closes it when the
     // pointer leaves both the bell and the center window.
@@ -171,12 +175,14 @@ pub fn build(app: &Application) {
         events::spawn_tickers(tx.clone()),
         events::spawn_battery(tx.clone()),
         events::spawn_audio(tx.clone()),
+        events::spawn_weather(tx.clone()),
         events::spawn_notifications(tx.clone()),
     ];
 
     // Single main-thread reactor: drain the channel and dispatch to widgets.
     let qs_win_cl = qs_window.clone();
     let qs_rel_cl = qs_reload.clone();
+    let dash_cl = dash_fetch_id.clone();
     glib::timeout_add_local(POLL_INTERVAL, move || {
         loop {
             match rx.recv_timeout(Duration::from_millis(1)) {
@@ -185,6 +191,7 @@ pub fn build(app: &Application) {
                     &workspaces_box,
                     &window_title,
                     &clock_label,
+                    &dash_cl,
                     &sys_labels,
                     &qs_labels,
                     &qs_win_cl,
@@ -209,6 +216,7 @@ fn dispatch(
     workspaces_box: &gtk4::Box,
     window_title: &gtk4::Label,
     clock_label: &gtk4::Label,
+    dash: &widgets::clock::DashboardLabels,
     sys_labels: &[gtk4::Label],
     qs_labels: &widgets::quicksettings::QuickSettingsLabels,
     qs_window: &gtk4::ApplicationWindow,
@@ -224,8 +232,15 @@ fn dispatch(
         Event::ActiveWindow(title) => {
             widgets::window::update(window_title, title.as_deref());
         }
-        Event::ClockTick => widgets::clock::update(clock_label),
-        Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
+        Event::ClockTick => {
+            widgets::clock::update(clock_label);
+            widgets::clock::refresh(dash, None);
+        }
+        Event::SystemTick => {
+            widgets::sysinfo::update_system(sys_labels);
+            widgets::clock::refresh(dash, None);
+        }
+        Event::WeatherFetched(w) => widgets::clock::refresh(dash, Some(&w)),
         Event::BatteryChanged => widgets::quicksettings::refresh_battery(qs_labels),
         Event::NetworkChanged => widgets::quicksettings::refresh_network(qs_labels),
         Event::BluetoothChanged => widgets::quicksettings::refresh_bluetooth(qs_labels),

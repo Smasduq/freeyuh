@@ -10,11 +10,15 @@
 
 use std::sync::mpsc::Sender;
 
+use crate::services::weather::Weather;
+
 /// A single change the bar should react to.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Event {
     /// The active workspace changed to `id`.
     WorkspaceActive(i64),
+    /// Fresh weather data is available for the dashboard.
+    WeatherFetched(Weather),
     /// The set of workspaces changed (created/destroyed/rearranged).
     WorkspaceListChanged,
     /// The clock's displayed minute rolled over.
@@ -156,6 +160,24 @@ pub fn spawn_battery(tx: Sender<Event>) -> EventProducer {
                 let _ = tx.send(Event::BatteryChanged);
             }
             std::thread::sleep(std::time::Duration::from_secs(2));
+        }
+    })
+}
+
+/// Spawn a producer that periodically re-fetches weather for the dashboard and
+/// emits [`Event::WeatherFetched`] when the headline reading changes.
+pub fn spawn_weather(tx: Sender<Event>) -> EventProducer {
+    EventProducer::spawn(move || {
+        let mut last: Option<Weather> = None;
+        loop {
+            let current = crate::services::weather::fetch();
+            if last.as_ref() != Some(&current) {
+                let _ = tx.send(Event::WeatherFetched(current.clone()));
+                last = Some(current);
+            }
+            // Refresh on a coarse interval so the dashboard stays current
+            // without hammering the endpoint.
+            std::thread::sleep(std::time::Duration::from_secs(600));
         }
     })
 }
