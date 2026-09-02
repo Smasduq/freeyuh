@@ -76,6 +76,7 @@ pub fn build(app: &Application) {
     let (sys_box, sys_labels) = widgets::sysinfo::create();
     let (qs_btn, qs_labels, qs_window, qs_reload) = widgets::quicksettings::create(app);
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
+    let (mut launcher_widget, _launcher_win) = widgets::launcher::LauncherWidget::new(app);
 
     right.append(&sys_box);
     right.append(&qs_btn);
@@ -188,6 +189,7 @@ pub fn build(app: &Application) {
                     &qs_win_cl,
                     &qs_rel_cl,
                     &mut notif_widget,
+                    &mut launcher_widget,
                 ),
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
                 Err(mpsc::RecvTimeoutError::Disconnected) => return glib::ControlFlow::Break,
@@ -210,6 +212,7 @@ fn dispatch(
     qs_window: &gtk4::ApplicationWindow,
     qs_reload: &Rc<dyn Fn()>,
     notif_widget: &mut widgets::notifications::NotificationWidget,
+    launcher_widget: &mut widgets::launcher::LauncherWidget,
 ) {
     match event {
         Event::WorkspaceActive(_) | Event::WorkspaceListChanged => {
@@ -225,6 +228,9 @@ fn dispatch(
         Event::BluetoothChanged => widgets::quicksettings::refresh_bluetooth(qs_labels),
         Event::AudioChanged => widgets::quicksettings::refresh_audio(qs_labels),
         Event::ToggleQuickSettings => widgets::quicksettings::toggle(qs_window, qs_reload),
+        Event::ToggleLauncher => launcher_widget.toggle(),
+        Event::ShowLauncher => launcher_widget.show(),
+        Event::HideLauncher => launcher_widget.hide(),
         Event::ReloadStyle => style::load(),
         Event::Notification(_)
         | Event::NotificationClosed { .. }

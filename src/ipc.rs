@@ -67,6 +67,15 @@ pub fn spawn_server(tx: Sender<Event>) {
                     "toggle-notifications" | "toggle-notifs" | "notifs" => {
                         let _ = tx_cl.send(Event::ToggleNotifications);
                     }
+                    "toggle-launcher" | "toggle-run" | "launcher" | "run" | "spotlight" | "apps" => {
+                        let _ = tx_cl.send(Event::ToggleLauncher);
+                    }
+                    "show-launcher" => {
+                        let _ = tx_cl.send(Event::ShowLauncher);
+                    }
+                    "hide-launcher" => {
+                        let _ = tx_cl.send(Event::HideLauncher);
+                    }
                     "reload-style" | "reload" => {
                         let _ = tx_cl.send(Event::ReloadStyle);
                     }

@@ -43,6 +43,12 @@ pub enum Event {
     ToggleNotifications,
     /// Toggle quick settings window visibility.
     ToggleQuickSettings,
+    /// Toggle Spotlight app launcher.
+    ToggleLauncher,
+    /// Show Spotlight app launcher.
+    ShowLauncher,
+    /// Hide Spotlight app launcher.
+    HideLauncher,
     /// Reload application CSS theme.
     ReloadStyle,
     /// Clear all notifications from history.

@@ -5,6 +5,7 @@
 //! commands, and a background event producer that emits unified [`Event`]s
 //! when its state changes.
 
+pub mod apps;
 pub mod audio;
 pub mod bluetooth;
 pub mod network;

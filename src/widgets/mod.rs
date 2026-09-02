@@ -4,6 +4,7 @@
 //! plus its own refresh/update logic.
 
 pub mod clock;
+pub mod launcher;
 pub mod notifications;
 pub mod quicksettings;
 pub mod sysinfo;

@@ -932,4 +932,181 @@ switch.qs-switch:checked slider {
 .qs-scrolled-window scrollbar slider:hover {
     background: rgba(164, 209, 180, 0.35);
 }
+
+/* =========================================================================
+   SPOTLIGHT APP LAUNCHER (Caelestia / macOS Spotlight style)
+   ========================================================================= */
+
+.launcher-window {
+    background: transparent;
+}
+
+.launcher-card {
+    background: rgba(14, 19, 16, 0.96);
+    border: 1px solid rgba(164, 209, 180, 0.25);
+    border-radius: 24px;
+    padding: 14px 16px;
+    min-width: 560px;
+    max-width: 600px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.launcher-search-box {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 6px 14px;
+    margin-bottom: 8px;
+    transition: all 150ms ease;
+}
+
+.launcher-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(164, 209, 180, 0.4);
+    box-shadow: 0 0 0 1px rgba(164, 209, 180, 0.3);
+}
+
+.launcher-search-icon {
+    font-size: 18px;
+    color: #a4d1b4;
+    margin-right: 4px;
+}
+
+.launcher-search-entry {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    box-shadow: none;
+    padding: 4px 0;
+}
+
+.launcher-search-entry:focus {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.launcher-chip {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #8d9990;
+}
+
+.launcher-results-box {
+    margin-top: 4px;
+}
+
+.launcher-item {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    padding: 8px 12px;
+    margin: 2px 0;
+    transition: all 120ms ease;
+}
+
+.launcher-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.launcher-item.selected {
+    background: rgba(164, 209, 180, 0.14);
+    border-color: rgba(164, 209, 180, 0.35);
+}
+
+.launcher-item-icon {
+    margin-right: 4px;
+}
+
+.launcher-item-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+.launcher-item.selected .launcher-item-title {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.launcher-item-desc {
+    font-size: 11px;
+    color: #6e7870;
+}
+
+.launcher-item.selected .launcher-item-desc {
+    color: #a4d1b4;
+}
+
+.launcher-enter-hint {
+    color: #6e7870;
+    font-size: 14px;
+    margin-left: 8px;
+    opacity: 0;
+    transition: opacity 120ms ease;
+}
+
+.launcher-item.selected .launcher-enter-hint {
+    color: #a4d1b4;
+    opacity: 1;
+}
+
+.launcher-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 8px;
+    margin-top: 6px;
+}
+
+.launcher-hint {
+    font-size: 11px;
+    color: #6e7870;
+    font-weight: 500;
+}
+
+.launcher-count {
+    font-size: 11px;
+    color: #8d9990;
+    font-weight: 600;
+}
+
+.launcher-empty {
+    padding: 40px 16px;
+    color: #6e7870;
+}
+
+.launcher-empty-icon {
+    font-size: 34px;
+    margin-bottom: 8px;
+    color: #414a43;
+}
+
+.launcher-empty-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+.launcher-scrolled-window scrollbar {
+    background: transparent;
+    border: none;
+    min-width: 4px;
+}
+
+.launcher-scrolled-window scrollbar slider {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    min-width: 4px;
+    border: none;
+}
+
+.launcher-scrolled-window scrollbar slider:hover {
+    background: rgba(164, 209, 180, 0.35);
+}
 "#;

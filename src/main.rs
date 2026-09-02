@@ -22,6 +22,7 @@ fn main() {
                     println!("Freeyuh Desktop Shell Controller");
                     println!("Usage:");
                     println!("  freeyuh                             Launch shell daemon");
+                    println!("  freeyuh toggle-launcher / run       Toggle Spotlight App Launcher");
                     println!("  freeyuh toggle-qs / toggle-quicksettings   Toggle Quick Settings / Control Center");
                     println!("  freeyuh toggle-notifs / notifs      Toggle Notification Center");
                     println!("  freeyuh reload / reload-style       Reload CSS style");
