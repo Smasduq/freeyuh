@@ -4,6 +4,7 @@
 //! plus its own refresh/update logic.
 
 pub mod audio;
+pub mod bluetooth;
 pub mod clock;
 pub mod network;
 pub mod notifications;
