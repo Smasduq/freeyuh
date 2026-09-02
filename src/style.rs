@@ -23,20 +23,20 @@ window {
     border: none;
     box-shadow: none;
     padding: 0 4px;
-    color: #dee8df;
-    font-family: "Adwaita Sans", "Inter", "JetBrainsMono Nerd Font", system-ui, sans-serif;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", "Inter", monospace, system-ui;
     font-size: 13px;
     min-height: 36px;
 }
 
 /* --- Workspaces Island --- */
 .workspaces {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     padding: 4px 10px;
     margin: 3px 4px 3px 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 230, 118, 0.04);
 }
 
 .workspaces button.ws {
@@ -52,66 +52,72 @@ window {
 }
 
 .workspaces button.ws.occupied {
-    background: #6e7870;
+    background: #1a3326;
     min-width: 8px;
     min-height: 8px;
 }
 
 .workspaces button.ws.occupied:hover {
-    background: #dee8df;
+    background: #00e676;
+    box-shadow: 0 0 6px rgba(0, 230, 118, 0.5);
 }
 
 .workspaces button.ws.active {
-    background: #a4d1b4;
+    background: #00e676;
     min-width: 22px;
     min-height: 8px;
     border-radius: 999px;
-    box-shadow: 0 0 8px rgba(164, 209, 180, 0.45);
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.6), 0 0 24px rgba(0, 230, 118, 0.25);
 }
 
 .workspaces button.ws.free {
     background: transparent;
-    border: 1.5px dashed #414a43;
+    border: 1.5px dashed rgba(0, 230, 118, 0.18);
     min-width: 8px;
     min-height: 8px;
 }
 
 .workspaces button.ws.free:hover {
-    border-color: #a4d1b4;
-    background: rgba(164, 209, 180, 0.15);
+    border-color: rgba(0, 230, 118, 0.5);
+    background: rgba(0, 230, 118, 0.08);
 }
 
 /* --- Active Window Island --- */
 .active-window {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.10);
     border-radius: 999px;
     padding: 4px 14px;
     margin: 3px 4px;
-    color: #dee8df;
+    color: #5a8a6e;
     font-size: 12px;
     font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* --- Clock & Calendar Island --- */
 .clock-pill {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     padding: 4px 16px;
     margin: 3px 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
     transition: all 180ms ease;
 }
 
 .clock-pill:hover {
-    background: rgba(22, 30, 25, 0.95);
-    border-color: rgba(164, 209, 180, 0.3);
+    background: rgba(6, 14, 9, 0.88);
+    border-color: rgba(0, 230, 118, 0.32);
+    box-shadow: 0 0 14px rgba(0, 230, 118, 0.12);
 }
 
 .clock-label {
     font-size: 13px;
+    color: #00e676;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-weight: 600;
 }
 
 .calendar-window {
@@ -124,12 +130,16 @@ window {
 }
 
 .dash-dropdown {
-    background: rgba(12, 17, 14, 0.97);
-    border: 1px solid rgba(164, 209, 180, 0.18);
+    background: rgba(4, 10, 6, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.18);
     border-radius: 22px;
     padding: 16px;
-    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-    color: #dee8df;
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.85),
+        0 0 40px rgba(0, 230, 118, 0.06),
+        0 0 0 1px rgba(0, 230, 118, 0.04) inset;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-dropdown > * {
@@ -140,88 +150,95 @@ window {
 }
 
 .dash-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 230, 118, 0.03);
+    border: 1px solid rgba(0, 230, 118, 0.08);
     border-radius: 16px;
     padding: 12px 14px;
 }
 
 /* Hero: big time + date */
 .dash-hero {
-    background: linear-gradient(135deg, rgba(164, 209, 180, 0.14), rgba(164, 209, 180, 0.04));
-    border: 1px solid rgba(164, 209, 180, 0.22);
+    background: linear-gradient(135deg, rgba(0, 230, 118, 0.10), rgba(0, 230, 118, 0.02));
+    border: 1px solid rgba(0, 230, 118, 0.20);
 }
 
 .dash-hero-time {
     font-size: 40px;
     font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -1px;
+    color: #00e676;
 }
 
 .dash-hero-date {
     font-size: 14px;
     font-weight: 600;
-    color: #a4d1b4;
+    color: #69ff97;
     margin-top: -2px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-hero-today {
     font-size: 11px;
     font-weight: 600;
-    color: #8d9990;
+    color: #2e4d3a;
     margin-top: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-battery {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.18);
     border-radius: 999px;
     padding: 3px 10px;
     font-size: 12px;
     font-weight: 600;
-    color: #dee8df;
+    color: #00e676;
     margin-top: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* Weather */
 .dash-weather-icon {
     font-size: 38px;
-    color: #a4d1b4;
+    color: #00e676;
     min-width: 44px;
+    text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
 }
 
 .dash-weather-temp {
     font-size: 30px;
     font-weight: 700;
-    color: #ffffff;
+    color: #e8fff2;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-weather-condition {
     font-size: 13px;
     font-weight: 600;
-    color: #a4d1b4;
+    color: #69ff97;
     padding-bottom: 4px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-weather-feels {
     font-size: 11px;
-    color: #8d9990;
+    color: #2e4d3a;
     margin-top: 2px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-weather-location {
     font-size: 11px;
-    color: #8d9990;
+    color: #3d6b52;
     margin-top: 6px;
     font-weight: 500;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-stat-pill {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 230, 118, 0.04);
+    border: 1px solid rgba(0, 230, 118, 0.10);
     border-radius: 10px;
     padding: 4px 10px;
     min-width: 92px;
@@ -229,13 +246,14 @@ window {
 
 .dash-stat-icon {
     font-size: 13px;
-    color: #a4d1b4;
+    color: #00e676;
 }
 
 .dash-stat-value {
     font-size: 12px;
     font-weight: 600;
-    color: #dee8df;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* System section */
@@ -243,59 +261,63 @@ window {
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.2px;
-    color: #6e7870;
+    color: #1e4030;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-stat-label {
     font-size: 12px;
     font-weight: 500;
-    color: #dee8df;
+    color: #4a6655;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-level {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.06);
     border-radius: 999px;
     border: none;
     min-height: 6px;
 }
 
 .dash-level trough {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.06);
     border-radius: 999px;
     min-height: 6px;
     border: none;
 }
 
 .dash-level highlight {
-    background: #a4d1b4;
+    background: #00e676;
     border-radius: 999px;
     min-height: 6px;
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
 }
 
 /* Calendar */
 .dash-calendar {
     background: transparent;
-    color: #dee8df;
+    color: #c8ffd4;
     font-size: 12px;
     padding: 0;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .dash-calendar header {
-    color: #dee8df;
+    color: #00e676;
     font-weight: bold;
     background: transparent;
 }
 
 .dash-calendar button {
     border-radius: 8px;
-    color: #dee8df;
+    color: #4a6655;
     padding: 4px;
     background: transparent;
 }
 
 .dash-calendar button:hover {
-    background: rgba(164, 209, 180, 0.18);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.12);
+    color: #00e676;
 }
 
 .dash-calendar .day-number {
@@ -303,82 +325,85 @@ window {
 }
 
 .dash-calendar .day-name {
-    color: #8d9990;
+    color: #2e4d3a;
 }
 
 .dash-calendar .day-number.today {
-    background: #a4d1b4;
-    color: #0b0f0c;
+    background: #00e676;
+    color: #030805;
     font-weight: 700;
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
 }
 
 .dash-calendar .day-number:selected {
-    background: rgba(164, 209, 180, 0.3);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.2);
+    color: #00e676;
 }
 
 .dash-calendar .day-number:selected.today {
-    background: #a4d1b4;
-    color: #0b0f0c;
+    background: #00e676;
+    color: #030805;
 }
 
 /* --- System Resource Island --- */
 .sysinfo-group {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.10);
     border-radius: 999px;
     padding: 4px 10px;
     margin: 3px 3px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
 }
 
 .sys-item {
     background: transparent;
     border: none;
-    color: #dee8df;
+    color: #4a6655;
     padding: 0px 4px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .sys-item.cpu {
-    color: #a4d1b4;
+    color: #00e676;
 }
 
 .sys-item.cpu.warning {
-    color: #cec06b;
+    color: #ccff00;
 }
 
 .sys-item.cpu.critical {
-    color: #fa746f;
+    color: #ff4444;
 }
 
 .sys-item.mem {
-    color: #7ad9bc;
+    color: #69ff97;
 }
 
 .sys-item.mem.warning {
-    color: #cec06b;
+    color: #ccff00;
 }
 
 .sys-item.mem.critical {
-    color: #fa746f;
+    color: #ff4444;
 }
 
-/* --- Unified Quick Settings Island (GNOME / Caelestia style) --- */
+/* --- Unified Quick Settings Island (Caelestia style) --- */
 .quicksettings-pill {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.10);
     border-radius: 999px;
     padding: 4px 12px;
     margin: 3px 3px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
     transition: all 180ms ease;
 }
 
 .quicksettings-pill:hover {
-    background: rgba(22, 30, 25, 0.95);
-    border-color: rgba(164, 209, 180, 0.3);
+    background: rgba(6, 14, 9, 0.88);
+    border-color: rgba(0, 230, 118, 0.30);
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.08);
 }
 
 .qs-pill-icon {
@@ -387,26 +412,28 @@ window {
 }
 
 .qs-pill-net {
-    color: #9cebcc;
+    color: #00e676;
 }
 
 .qs-pill-bt {
-    color: #dee8df;
+    color: #69ff97;
 }
 
 .qs-pill-audio {
-    color: #86dcce;
-    font-weight: 500;
+    color: #00e676;
+    font-weight: 600;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-pill-bat {
-    color: #a3f1bd;
-    font-weight: 500;
+    color: #69ff97;
+    font-weight: 600;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* --- Notification Bell Island --- */
 .bell {
-    background: rgba(4, 8, 5, 0.90);
+    background: rgba(4, 8, 5, 0.78);
     border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     padding: 4px 10px;
@@ -418,7 +445,7 @@ window {
 }
 
 .bell:hover {
-    background: rgba(6, 14, 9, 0.96);
+    background: rgba(6, 14, 9, 0.88);
     border-color: rgba(0, 230, 118, 0.35);
     color: #00e676;
     box-shadow: 0 0 12px rgba(0, 230, 118, 0.18);
@@ -451,14 +478,14 @@ window {
 }
 
 .notif-dropdown {
-    background: rgba(3, 8, 5, 0.98);
+    background: rgba(4, 10, 6, 0.78);
     border: 1px solid rgba(0, 230, 118, 0.18);
     border-radius: 20px;
     padding: 14px;
     min-width: 420px;
     min-height: 540px;
     box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.9),
+        0 24px 60px rgba(0, 0, 0, 0.85),
         0 0 40px rgba(0, 230, 118, 0.06),
         0 0 0 1px rgba(0, 230, 118, 0.04) inset;
     font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", monospace;
@@ -543,7 +570,7 @@ window {
 
 /* Base card (used inside the notification center history) */
 .notif-toast {
-    background: rgba(4, 10, 6, 0.97);
+    background: rgba(6, 16, 10, 0.70);
     border: 1px solid rgba(0, 230, 118, 0.14);
     border-left: 3px solid rgba(0, 230, 118, 0.6);
     border-radius: 12px;
@@ -555,18 +582,18 @@ window {
 }
 
 .notif-toast:hover {
-    background: rgba(6, 14, 9, 0.99);
+    background: rgba(8, 22, 14, 0.85);
     border-color: rgba(0, 230, 118, 0.28);
 }
 
 /* Live toast popup — Caelestia neon glass */
 .toast-window .notif-toast {
-    background: rgba(3, 8, 5, 0.98);
+    background: rgba(4, 10, 6, 0.82);
     border: 1px solid rgba(0, 230, 118, 0.22);
     border-left: 3px solid #00e676;
     border-radius: 14px;
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 20px 50px rgba(0, 0, 0, 0.85),
         0 0 0 1px rgba(0, 230, 118, 0.06) inset,
         0 0 24px rgba(0, 230, 118, 0.10);
 }
@@ -646,7 +673,7 @@ window {
 
 
 /* =========================================================================
-   UNIFIED QUICK SETTINGS / CONTROL CENTER PANEL (GNOME / Caelestia M3)
+   UNIFIED QUICK SETTINGS / CONTROL CENTER PANEL (Caelestia M3)
    ========================================================================= */
 
 .qs-window {
@@ -654,13 +681,17 @@ window {
 }
 
 .qs-dropdown {
-    background: rgba(12, 17, 23, 0.98);
-    border: 1px solid rgba(130, 207, 218, 0.24);
+    background: rgba(4, 10, 6, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.18);
     border-radius: 24px;
     padding: 18px;
     min-width: 440px;
     min-height: 540px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.85),
+        0 0 40px rgba(0, 230, 118, 0.06),
+        0 0 0 1px rgba(0, 230, 118, 0.04) inset;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-page {
@@ -670,76 +701,81 @@ window {
 /* --- Header Row --- */
 .qs-header-row {
     padding: 2px 4px 12px 4px;
-    border-bottom: 1px solid rgba(130, 207, 218, 0.14);
+    border-bottom: 1px solid rgba(0, 230, 118, 0.12);
     margin-bottom: 8px;
 }
 
 .qs-header-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-    color: #ffffff;
+    color: #00e676;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    letter-spacing: 0.3px;
 }
 
 .qs-header-battery {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.07);
+    border: 1px solid rgba(0, 230, 118, 0.16);
     border-radius: 999px;
     padding: 3px 10px;
     font-size: 12px;
     font-weight: 600;
-    color: #dee8df;
+    color: #69ff97;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-header-battery.charging {
-    background: rgba(164, 209, 180, 0.15);
-    border-color: rgba(164, 209, 180, 0.3);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.12);
+    border-color: rgba(0, 230, 118, 0.3);
+    color: #00e676;
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.2);
 }
 
-/* --- GNOME Quick Toggle Tiles Grid --- */
+/* --- Quick Toggle Tiles Grid --- */
 .qs-tiles-container {
     margin-bottom: 2px;
 }
 
 .qs-tile {
-    background: rgba(27, 39, 48, 0.86);
-    border: 1px solid rgba(130, 207, 218, 0.12);
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 16px;
     padding: 9px 10px;
     transition: all 150ms ease;
 }
 
 .qs-tile:hover {
-    background: rgba(35, 52, 61, 0.96);
-    border-color: rgba(130, 207, 218, 0.35);
+    background: rgba(0, 230, 118, 0.10);
+    border-color: rgba(0, 230, 118, 0.32);
 }
 
 .qs-tile.active {
-    background: rgba(63, 116, 117, 0.34);
-    border-color: rgba(130, 207, 218, 0.5);
+    background: rgba(0, 230, 118, 0.18);
+    border-color: rgba(0, 230, 118, 0.50);
+    box-shadow: 0 0 14px rgba(0, 230, 118, 0.15);
 }
 
 .qs-tile-icon-btn {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(0, 230, 118, 0.06);
     border: none;
     border-radius: 999px;
     min-width: 38px;
     min-height: 38px;
     font-size: 16px;
-    color: #dee8df;
+    color: #3d6b52;
     padding: 0;
-    halign: center;
-    valign: center;
     transition: all 150ms ease;
 }
 
 .qs-tile-icon-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 230, 118, 0.12);
+    color: #69ff97;
 }
 
 .qs-tile.active .qs-tile-icon-btn {
-    background: #82cfd7;
-    color: #0b0f0c;
+    background: #00e676;
+    color: #030805;
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.5);
 }
 
 .qs-tile-text-btn {
@@ -751,17 +787,18 @@ window {
 .qs-tile-title {
     font-size: 12px;
     font-weight: 600;
-    color: #ffffff;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-tile-sub {
     font-size: 10px;
     font-weight: 500;
-    color: #8d9990;
+    color: #2e4d3a;
 }
 
 .qs-tile.active .qs-tile-sub {
-    color: #82cfd7;
+    color: #00e676;
 }
 
 .qs-tile-arrow-btn {
@@ -771,85 +808,82 @@ window {
     min-width: 28px;
     min-height: 28px;
     font-size: 15px;
-    color: #8d9990;
+    color: #2e4d3a;
     padding: 0;
     transition: all 150ms ease;
 }
 
 .qs-tile-arrow-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+    background: rgba(0, 230, 118, 0.10);
+    color: #69ff97;
 }
 
 /* --- Volume Slider Card --- */
 .qs-slider-card {
-    background: rgba(22, 31, 39, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 16px;
     padding: 9px 12px;
     margin-top: 6px;
 }
 
 .qs-slider-mute-btn {
-    background: rgba(130, 207, 218, 0.12);
+    background: rgba(0, 230, 118, 0.08);
     border: none;
     border-radius: 999px;
     min-width: 38px;
     min-height: 38px;
     font-size: 16px;
-    color: #82cfd7;
+    color: #00e676;
     padding: 0;
     transition: all 150ms ease;
 }
 
 .qs-slider-mute-btn.muted {
-    color: #fa746f;
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.10);
 }
 
 .qs-slider-mute-btn:hover {
-    background: rgba(130, 207, 218, 0.24);
-}
-
-.qs-slider-icon {
-    halign: center;
-    valign: center;
+    background: rgba(0, 230, 118, 0.16);
 }
 
 .qs-volume-scale trough {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 230, 118, 0.08);
     border-radius: 999px;
     min-height: 6px;
     border: none;
 }
 
 .qs-volume-scale highlight {
-    background: #82cfd7;
+    background: #00e676;
     border-radius: 999px;
     min-height: 6px;
+    box-shadow: 0 0 8px rgba(0, 230, 118, 0.4);
 }
 
 .qs-volume-scale slider {
-    background: #dee8df;
+    background: #c8ffd4;
     border-radius: 999px;
     min-width: 14px;
     min-height: 14px;
     margin: -4px 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 0 6px rgba(0, 230, 118, 0.3);
     border: none;
 }
 
 .qs-slider-pct {
     font-size: 11px;
     font-weight: 600;
-    color: #8d9990;
+    color: #2e4d3a;
     min-width: 36px;
-    text-align: right;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* --- Detail Navigation Bar --- */
 .qs-nav-bar {
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 230, 118, 0.10);
     margin-bottom: 6px;
 }
 
@@ -860,20 +894,21 @@ window {
     min-width: 32px;
     min-height: 32px;
     font-size: 18px;
-    color: #dee8df;
+    color: #3d6b52;
     padding: 0;
     transition: all 150ms ease;
 }
 
 .qs-back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.10);
+    color: #00e676;
 }
 
 .qs-nav-title {
     font-size: 14px;
     font-weight: 700;
-    color: #ffffff;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-rescan-btn {
@@ -883,19 +918,19 @@ window {
     min-width: 32px;
     min-height: 32px;
     font-size: 15px;
-    color: #8d9990;
+    color: #2e4d3a;
     padding: 0;
     transition: all 150ms ease;
 }
 
 .qs-rescan-btn:hover {
-    background: rgba(164, 209, 180, 0.18);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.12);
+    color: #00e676;
 }
 
-/* Material 3 Switch Component */
+/* Switch Component */
 switch.qs-switch {
-    background: rgba(255, 255, 255, 0.14);
+    background: rgba(0, 230, 118, 0.10);
     border-radius: 999px;
     border: none;
     padding: 0;
@@ -905,11 +940,12 @@ switch.qs-switch {
 }
 
 switch.qs-switch:checked {
-    background: #a4d1b4;
+    background: #00e676;
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
 }
 
 switch.qs-switch slider {
-    background: #dee8df;
+    background: #3d6b52;
     border-radius: 999px;
     margin: 2px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -917,29 +953,30 @@ switch.qs-switch slider {
 }
 
 switch.qs-switch:checked slider {
-    background: #0b0f0c;
+    background: #030805;
 }
 
 /* Feedback banner */
 .qs-status-banner {
-    background: rgba(164, 209, 180, 0.12);
-    border: 1px solid rgba(164, 209, 180, 0.25);
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.22);
     border-radius: 999px;
     padding: 4px 14px;
-    color: #a4d1b4;
+    color: #00e676;
     font-size: 11px;
     font-weight: 600;
     margin: 4px 0;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
-/* Detail Scrolled List Items (Flat Caelestia / Backgroundless) */
+/* Detail Scrolled List Items */
 .qs-list-box {
     margin-top: 2px;
 }
 
 .qs-item {
-    background: rgba(27, 39, 48, 0.42);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(0, 230, 118, 0.04);
+    border: 1px solid rgba(0, 230, 118, 0.08);
     border-radius: 12px;
     padding: 8px 10px;
     margin: 2px 0;
@@ -947,12 +984,12 @@ switch.qs-switch:checked slider {
 }
 
 .qs-item:hover {
-    background: rgba(35, 52, 61, 0.72);
-    border-color: rgba(130, 207, 218, 0.2);
+    background: rgba(0, 230, 118, 0.08);
+    border-color: rgba(0, 230, 118, 0.22);
 }
 
 .qs-item.connected .qs-item-name {
-    color: #a4d1b4;
+    color: #00e676;
     font-weight: 700;
 }
 
@@ -965,75 +1002,79 @@ switch.qs-switch:checked slider {
 
 .qs-item-icon {
     font-size: 16px;
+    color: #2e4d3a;
 }
 
 .qs-item-name {
-    color: #dee8df;
+    color: #c8ffd4;
     font-weight: 500;
     font-size: 13px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-connected-icon {
-    color: #a4d1b4;
+    color: #00e676;
     font-size: 14px;
     font-weight: bold;
 }
 
 .qs-saved-icon {
-    color: #6e7870;
+    color: #1e4030;
     font-size: 12px;
 }
 
 .qs-paired-icon {
-    color: #6e7870;
+    color: #1e4030;
     font-size: 12px;
 }
 
 .qs-lock-icon {
-    color: #6e7870;
+    color: #1e4030;
     font-size: 12px;
 }
 
 .qs-item-signal {
-    color: #6e7870;
+    color: #2e4d3a;
     font-size: 11px;
     font-weight: 500;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-item-battery {
-    color: #8d9990;
+    color: #2e4d3a;
     font-size: 11px;
     font-weight: 500;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-connect-btn {
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: #8d9990;
+    color: #2e4d3a;
     font-size: 16px;
     padding: 4px 8px;
     transition: all 150ms ease;
 }
 
 .qs-connect-btn:hover {
-    background: rgba(164, 209, 180, 0.18);
-    color: #a4d1b4;
+    background: rgba(0, 230, 118, 0.12);
+    color: #00e676;
 }
 
 .qs-disconnect-btn {
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: #fa746f;
+    color: #5a2020;
     font-size: 16px;
     padding: 4px 8px;
     transition: all 150ms ease;
 }
 
 .qs-disconnect-btn:hover {
-    background: rgba(250, 116, 111, 0.18);
-    color: #fa746f;
+    background: rgba(255, 68, 68, 0.14);
+    color: #ff4444;
 }
 
 /* Auth Overlay Page */
@@ -1043,25 +1084,27 @@ switch.qs-switch:checked slider {
 
 .qs-auth-icon {
     font-size: 38px;
-    color: #a4d1b4;
+    color: #00e676;
     margin-bottom: 4px;
+    text-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
 }
 
 .qs-auth-ssid {
     font-size: 17px;
     font-weight: 700;
-    color: #ffffff;
+    color: #e8fff2;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-sub {
     font-size: 12px;
-    color: #8d9990;
+    color: #3d6b52;
     font-weight: 500;
 }
 
 .qs-auth-input-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 230, 118, 0.03);
+    border: 1px solid rgba(0, 230, 118, 0.08);
     border-radius: 16px;
     padding: 12px 14px;
     margin: 6px 0;
@@ -1071,38 +1114,41 @@ switch.qs-switch:checked slider {
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8px;
-    color: #6e7870;
+    color: #1e4030;
     margin-bottom: 4px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-entry {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 230, 118, 0.14);
     border-radius: 10px;
-    color: #dee8df;
+    color: #c8ffd4;
     font-size: 13px;
     padding: 8px 12px;
     transition: all 150ms ease;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-entry:focus {
-    border-color: #a4d1b4;
-    background: rgba(0, 0, 0, 0.55);
-    box-shadow: 0 0 0 1px rgba(164, 209, 180, 0.5);
+    border-color: #00e676;
+    background: rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.4), 0 0 12px rgba(0, 230, 118, 0.12);
 }
 
 .qs-auth-status {
     font-size: 12px;
     font-weight: 600;
     padding: 4px 8px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-status.error {
-    color: #fa746f;
+    color: #ff4444;
 }
 
 .qs-auth-status.connecting {
-    color: #a4d1b4;
+    color: #00e676;
 }
 
 .qs-auth-actions {
@@ -1110,65 +1156,70 @@ switch.qs-switch:checked slider {
 }
 
 .qs-auth-cancel-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 12px;
-    color: #dee8df;
+    color: #4a6655;
     font-size: 13px;
     font-weight: 600;
     padding: 10px 16px;
     transition: all 150ms ease;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
+    background: rgba(0, 230, 118, 0.10);
+    color: #c8ffd4;
 }
 
 .qs-auth-connect-btn {
-    background: #a4d1b4;
+    background: #00e676;
     border: none;
     border-radius: 12px;
-    color: #0b0f0c;
+    color: #030805;
     font-size: 13px;
     font-weight: 700;
     padding: 10px 16px;
     transition: all 150ms ease;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-auth-connect-btn:hover {
-    background: #bbf0cb;
-    box-shadow: 0 0 14px rgba(164, 209, 180, 0.45);
+    background: #69ff97;
+    box-shadow: 0 0 18px rgba(0, 230, 118, 0.5);
 }
 
 /* Empty / Scanning states */
 .qs-empty {
     padding: 40px 16px;
-    color: #6e7870;
+    color: #1e4030;
 }
 
 .qs-empty-icon {
     font-size: 34px;
     margin-bottom: 8px;
-    color: #414a43;
+    color: #152b20;
 }
 
 .qs-empty-text {
     font-size: 13px;
     font-weight: 600;
-    color: #dee8df;
+    color: #3d6b52;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-empty-sub {
     font-size: 11px;
-    color: #6e7870;
+    color: #1e4030;
     margin-top: 2px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .qs-scanning {
-    color: #a4aea5;
+    color: #2e4d3a;
     font-size: 13px;
     padding: 20px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* Thin Custom Scrollbar */
@@ -1179,18 +1230,18 @@ switch.qs-switch:checked slider {
 }
 
 .qs-scrolled-window scrollbar slider {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     min-width: 4px;
     border: none;
 }
 
 .qs-scrolled-window scrollbar slider:hover {
-    background: rgba(164, 209, 180, 0.35);
+    background: rgba(0, 230, 118, 0.30);
 }
 
 /* =========================================================================
-   SPOTLIGHT APP LAUNCHER (Caelestia / macOS Spotlight style)
+   SPOTLIGHT APP LAUNCHER (Caelestia style)
    ========================================================================= */
 
 .launcher-window {
@@ -1198,17 +1249,21 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-card {
-    background: rgba(14, 19, 16, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.25);
+    background: rgba(4, 10, 6, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.20);
     border-radius: 24px;
     padding: 14px 16px;
     min-width: 560px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.85),
+        0 0 40px rgba(0, 230, 118, 0.06),
+        0 0 0 1px rgba(0, 230, 118, 0.04) inset;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-search-box {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 16px;
     padding: 6px 14px;
     margin-bottom: 8px;
@@ -1216,26 +1271,27 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-search-box:focus-within {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(164, 209, 180, 0.4);
-    box-shadow: 0 0 0 1px rgba(164, 209, 180, 0.3);
+    background: rgba(0, 230, 118, 0.08);
+    border-color: rgba(0, 230, 118, 0.45);
+    box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.25), 0 0 16px rgba(0, 230, 118, 0.10);
 }
 
 .launcher-search-icon {
     font-size: 18px;
-    color: #a4d1b4;
+    color: #00e676;
     margin-right: 4px;
 }
 
 .launcher-search-entry {
     background: transparent;
     border: none;
-    color: #ffffff;
+    color: #e8fff2;
     font-size: 15px;
     font-weight: 500;
     outline: none;
     box-shadow: none;
     padding: 4px 0;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-search-entry:focus {
@@ -1246,12 +1302,14 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-chip {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.14);
     border-radius: 6px;
     padding: 2px 6px;
     font-size: 10px;
     font-weight: 700;
-    color: #8d9990;
+    color: #2e4d3a;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-results-box {
@@ -1268,12 +1326,13 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 230, 118, 0.04);
 }
 
 .launcher-item.selected {
-    background: rgba(164, 209, 180, 0.14);
-    border-color: rgba(164, 209, 180, 0.35);
+    background: rgba(0, 230, 118, 0.10);
+    border-color: rgba(0, 230, 118, 0.28);
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.08);
 }
 
 .launcher-item-icon {
@@ -1283,25 +1342,27 @@ switch.qs-switch:checked slider {
 .launcher-item-title {
     font-size: 13.5px;
     font-weight: 600;
-    color: #dee8df;
+    color: #c8ffd4;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-item.selected .launcher-item-title {
-    color: #ffffff;
+    color: #00e676;
     font-weight: 700;
 }
 
 .launcher-item-desc {
     font-size: 11px;
-    color: #6e7870;
+    color: #2e4d3a;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-item.selected .launcher-item-desc {
-    color: #a4d1b4;
+    color: #69ff97;
 }
 
 .launcher-enter-hint {
-    color: #6e7870;
+    color: #1e4030;
     font-size: 14px;
     margin-left: 8px;
     opacity: 0;
@@ -1309,43 +1370,46 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-item.selected .launcher-enter-hint {
-    color: #a4d1b4;
+    color: #00e676;
     opacity: 1;
 }
 
 .launcher-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(0, 230, 118, 0.10);
     padding-top: 8px;
     margin-top: 6px;
 }
 
 .launcher-hint {
     font-size: 11px;
-    color: #6e7870;
+    color: #1e4030;
     font-weight: 500;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-count {
     font-size: 11px;
-    color: #8d9990;
+    color: #2e4d3a;
     font-weight: 600;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-empty {
     padding: 40px 16px;
-    color: #6e7870;
+    color: #1e4030;
 }
 
 .launcher-empty-icon {
     font-size: 34px;
     margin-bottom: 8px;
-    color: #414a43;
+    color: #152b20;
 }
 
 .launcher-empty-text {
     font-size: 13px;
     font-weight: 600;
-    color: #dee8df;
+    color: #3d6b52;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .launcher-scrolled-window scrollbar {
@@ -1355,14 +1419,14 @@ switch.qs-switch:checked slider {
 }
 
 .launcher-scrolled-window scrollbar slider {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     min-width: 4px;
     border: none;
 }
 
 .launcher-scrolled-window scrollbar slider:hover {
-    background: rgba(164, 209, 180, 0.35);
+    background: rgba(0, 230, 118, 0.30);
 }
 
 /* =========================================================================
@@ -1370,28 +1434,35 @@ switch.qs-switch:checked slider {
    ========================================================================= */
 
 .powermenu-backdrop {
-    background: rgba(4, 7, 5, 0.72);
+    background: rgba(0, 5, 2, 0.65);
 }
 
 .powermenu-card {
-    background: rgba(14, 19, 16, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.25);
+    background: rgba(4, 10, 6, 0.78);
+    border: 1px solid rgba(0, 230, 118, 0.20);
     border-radius: 28px;
     padding: 36px 44px;
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    box-shadow:
+        0 36px 90px rgba(0, 0, 0, 0.85),
+        0 0 50px rgba(0, 230, 118, 0.05),
+        0 0 0 1px rgba(0, 230, 118, 0.04) inset;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .powermenu-title {
     font-size: 20px;
     font-weight: 700;
-    color: #dee8df;
+    color: #00e676;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    letter-spacing: 0.3px;
 }
 
 .powermenu-subtitle {
     font-size: 12px;
     font-weight: 500;
-    color: #6e7870;
+    color: #2e4d3a;
     margin-top: 2px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .powermenu-actions-row {
@@ -1399,8 +1470,8 @@ switch.qs-switch:checked slider {
 }
 
 .powermenu-tile {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.10);
     border-radius: 20px;
     padding: 24px 18px;
     min-width: 106px;
@@ -1411,79 +1482,81 @@ switch.qs-switch:checked slider {
 .powermenu-tile-icon {
     font-size: 34px;
     margin-bottom: 4px;
-    color: #8d9990;
+    color: #2e4d3a;
     transition: all 180ms ease;
 }
 
 .powermenu-tile-name {
     font-size: 13px;
     font-weight: 600;
-    color: #dee8df;
+    color: #4a6655;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .powermenu-tile-key {
     font-size: 10px;
     font-weight: 700;
-    color: #6e7870;
-    background: rgba(255, 255, 255, 0.06);
+    color: #1e4030;
+    background: rgba(0, 230, 118, 0.06);
     border-radius: 6px;
     padding: 2px 6px;
     margin-top: 4px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* Specific Action Color Accents */
 .action-poweroff.selected,
 .action-poweroff:hover {
-    background: rgba(250, 116, 111, 0.18);
-    border-color: rgba(250, 116, 111, 0.6);
-    box-shadow: 0 0 24px rgba(250, 116, 111, 0.35);
+    background: rgba(255, 68, 68, 0.14);
+    border-color: rgba(255, 68, 68, 0.55);
+    box-shadow: 0 0 28px rgba(255, 68, 68, 0.30);
 }
 .action-poweroff.selected .powermenu-tile-icon,
 .action-poweroff:hover .powermenu-tile-icon {
-    color: #fa746f;
+    color: #ff4444;
 }
 
 .action-reboot.selected,
 .action-reboot:hover {
-    background: rgba(240, 178, 122, 0.18);
-    border-color: rgba(240, 178, 122, 0.6);
-    box-shadow: 0 0 24px rgba(240, 178, 122, 0.35);
+    background: rgba(255, 160, 60, 0.14);
+    border-color: rgba(255, 160, 60, 0.55);
+    box-shadow: 0 0 28px rgba(255, 160, 60, 0.30);
 }
 .action-reboot.selected .powermenu-tile-icon,
 .action-reboot:hover .powermenu-tile-icon {
-    color: #f0b27a;
+    color: #ffa03c;
 }
 
 .action-suspend.selected,
 .action-suspend:hover {
-    background: rgba(133, 193, 233, 0.18);
-    border-color: rgba(133, 193, 233, 0.6);
-    box-shadow: 0 0 24px rgba(133, 193, 233, 0.35);
+    background: rgba(0, 195, 255, 0.12);
+    border-color: rgba(0, 195, 255, 0.50);
+    box-shadow: 0 0 28px rgba(0, 195, 255, 0.25);
 }
 .action-suspend.selected .powermenu-tile-icon,
 .action-suspend:hover .powermenu-tile-icon {
-    color: #85c1e9;
+    color: #00c3ff;
 }
 
 .action-lock.selected,
 .action-lock:hover {
-    background: rgba(164, 209, 180, 0.18);
-    border-color: rgba(164, 209, 180, 0.6);
-    box-shadow: 0 0 24px rgba(164, 209, 180, 0.35);
+    background: rgba(0, 230, 118, 0.12);
+    border-color: rgba(0, 230, 118, 0.50);
+    box-shadow: 0 0 28px rgba(0, 230, 118, 0.25);
 }
 .action-lock.selected .powermenu-tile-icon,
 .action-lock:hover .powermenu-tile-icon {
-    color: #a4d1b4;
+    color: #00e676;
 }
 
 .action-logout.selected,
 .action-logout:hover {
-    background: rgba(187, 143, 206, 0.18);
-    border-color: rgba(187, 143, 206, 0.6);
-    box-shadow: 0 0 24px rgba(187, 143, 206, 0.35);
+    background: rgba(180, 100, 255, 0.12);
+    border-color: rgba(180, 100, 255, 0.50);
+    box-shadow: 0 0 28px rgba(180, 100, 255, 0.25);
 }
 .action-logout.selected .powermenu-tile-icon,
 .action-logout:hover .powermenu-tile-icon {
-    color: #bb8fce;
+    color: #b464ff;
 }
 "#;
