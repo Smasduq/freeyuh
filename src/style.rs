@@ -947,7 +947,6 @@ switch.qs-switch:checked slider {
     border-radius: 24px;
     padding: 14px 16px;
     min-width: 560px;
-    max-width: 600px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 }
 

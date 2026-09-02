@@ -56,6 +56,7 @@ pub fn toggle_mute() {
 }
 
 /// Get the icon glyph appropriate for the current state.
+#[allow(dead_code)]
 pub fn icon(state: &AudioState) -> &'static str {
     if state.muted {
         return " 󰝟";
@@ -76,6 +77,7 @@ pub fn set_volume(percent: u8) {
 
 /// Change the output volume by `delta` percent. A positive value raises it and
 /// a negative value lowers it.
+#[allow(dead_code)]
 pub fn change_volume(delta_percent: i8) {
     if delta_percent == 0 {
         return;

@@ -21,6 +21,7 @@ const MAX_DISPLAY_RESULTS: usize = 30;
 pub struct LauncherWidget {
     window: ApplicationWindow,
     search_entry: Entry,
+    scroll: ScrolledWindow,
     results_box: Box,
     footer_count: Label,
     all_apps: Rc<RefCell<Vec<AppInfo>>>,
@@ -110,6 +111,7 @@ impl LauncherWidget {
         let widget = Self {
             window: window.clone(),
             search_entry: search_entry.clone(),
+            scroll: scroll.clone(),
             results_box: results_box.clone(),
             footer_count: footer_count.clone(),
             all_apps: all_apps.clone(),
@@ -127,6 +129,7 @@ impl LauncherWidget {
             let results_box_cl = results_box.clone();
             let footer_count_cl = footer_count.clone();
             let win_cl = window.clone();
+            let scroll_cl = scroll.clone();
 
             search_entry.connect_changed(move |entry| {
                 let query = entry.text().to_lowercase().trim().to_string();
@@ -154,6 +157,7 @@ impl LauncherWidget {
 
                 *filtered_cl.borrow_mut() = filtered.clone();
                 *selected_cl.borrow_mut() = 0;
+                scroll_cl.vadjustment().set_value(0.0);
 
                 render_results(
                     &results_box_cl,
@@ -175,6 +179,7 @@ impl LauncherWidget {
             let filtered_cl = filtered_indices.clone();
             let selected_cl = selected_index.clone();
             let item_rows_cl = item_rows.clone();
+            let scroll_cl = scroll.clone();
 
             key_controller.connect_key_pressed(move |_, keyval, _, _| {
                 match keyval {
@@ -187,7 +192,7 @@ impl LauncherWidget {
                         if total > 0 {
                             let mut sel = selected_cl.borrow_mut();
                             *sel = (*sel + 1) % total;
-                            update_selection_highlight(&item_rows_cl.borrow(), *sel);
+                            update_selection_highlight(&scroll_cl, &item_rows_cl.borrow(), *sel);
                         }
                         glib::Propagation::Stop
                     }
@@ -200,7 +205,7 @@ impl LauncherWidget {
                             } else {
                                 *sel -= 1;
                             }
-                            update_selection_highlight(&item_rows_cl.borrow(), *sel);
+                            update_selection_highlight(&scroll_cl, &item_rows_cl.borrow(), *sel);
                         }
                         glib::Propagation::Stop
                     }
@@ -238,6 +243,7 @@ impl LauncherWidget {
         *self.selected_index.borrow_mut() = 0;
 
         self.search_entry.set_text("");
+        self.scroll.vadjustment().set_value(0.0);
         render_results(
             &self.results_box,
             &apps,
@@ -373,13 +379,30 @@ fn render_results(
     *item_rows.borrow_mut() = rows;
 }
 
-/// Update CSS selection state on result items.
-fn update_selection_highlight(rows: &[Box], selected_idx: usize) {
+/// Update CSS selection state on result items and scroll viewport to keep selected row in view.
+fn update_selection_highlight(scroll: &ScrolledWindow, rows: &[Box], selected_idx: usize) {
     for (i, row) in rows.iter().enumerate() {
         if i == selected_idx {
             row.add_css_class("selected");
         } else {
             row.remove_css_class("selected");
         }
+    }
+
+    if rows.is_empty() {
+        return;
+    }
+
+    let vadj = scroll.vadjustment();
+    let row_height = 54.0;
+    let target_top = selected_idx as f64 * row_height;
+    let target_bottom = target_top + row_height;
+    let cur_val = vadj.value();
+    let page_size = vadj.page_size().max(320.0);
+
+    if target_top < cur_val {
+        vadj.set_value(target_top);
+    } else if target_bottom > cur_val + page_size {
+        vadj.set_value(target_bottom - page_size);
     }
 }
