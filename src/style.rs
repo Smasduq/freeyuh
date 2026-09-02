@@ -118,41 +118,208 @@ window {
     background: transparent;
 }
 
-.calendar-dropdown {
-    background: rgba(16, 23, 19, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.2);
+/* --- Modern Dashboard Panel --- */
+.dash-window {
+    background: transparent;
+}
+
+.dash-dropdown {
+    background: rgba(12, 17, 14, 0.97);
+    border: 1px solid rgba(164, 209, 180, 0.18);
+    border-radius: 22px;
+    padding: 16px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    color: #dee8df;
+}
+
+.dash-dropdown > * {
+    margin-bottom: 12px;
+}
+.dash-dropdown > *:last-child {
+    margin-bottom: 0;
+}
+
+.dash-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    padding: 12px 14px;
 }
 
-.calendar-header {
-    color: #a4d1b4;
-    font-weight: bold;
+/* Hero: big time + date */
+.dash-hero {
+    background: linear-gradient(135deg, rgba(164, 209, 180, 0.14), rgba(164, 209, 180, 0.04));
+    border: 1px solid rgba(164, 209, 180, 0.22);
+}
+
+.dash-hero-time {
+    font-size: 40px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -1px;
+}
+
+.dash-hero-date {
     font-size: 14px;
-    padding-bottom: 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 600;
+    color: #a4d1b4;
+    margin-top: -2px;
 }
 
-.calendar-widget {
+.dash-hero-today {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8d9990;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.dash-battery {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #dee8df;
+    margin-top: 6px;
+}
+
+/* Weather */
+.dash-weather-icon {
+    font-size: 38px;
+    color: #a4d1b4;
+    min-width: 44px;
+}
+
+.dash-weather-temp {
+    font-size: 30px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.dash-weather-condition {
+    font-size: 13px;
+    font-weight: 600;
+    color: #a4d1b4;
+    padding-bottom: 4px;
+}
+
+.dash-weather-feels {
+    font-size: 11px;
+    color: #8d9990;
+    margin-top: 2px;
+}
+
+.dash-weather-location {
+    font-size: 11px;
+    color: #8d9990;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.dash-stat-pill {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 4px 10px;
+    min-width: 92px;
+}
+
+.dash-stat-icon {
+    font-size: 13px;
+    color: #a4d1b4;
+}
+
+.dash-stat-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+/* System section */
+.dash-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #6e7870;
+}
+
+.dash-stat-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #dee8df;
+}
+
+.dash-level {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    border: none;
+    min-height: 6px;
+}
+
+.dash-level trough {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    min-height: 6px;
+    border: none;
+}
+
+.dash-level highlight {
+    background: #a4d1b4;
+    border-radius: 999px;
+    min-height: 6px;
+}
+
+/* Calendar */
+.dash-calendar {
     background: transparent;
     color: #dee8df;
     font-size: 12px;
+    padding: 0;
 }
 
-.calendar-widget header {
+.dash-calendar header {
     color: #dee8df;
     font-weight: bold;
+    background: transparent;
 }
 
-.calendar-widget button {
-    border-radius: 6px;
+.dash-calendar button {
+    border-radius: 8px;
     color: #dee8df;
     padding: 4px;
+    background: transparent;
 }
 
-.calendar-widget button:hover {
-    background: rgba(164, 209, 180, 0.2);
+.dash-calendar button:hover {
+    background: rgba(164, 209, 180, 0.18);
+    color: #a4d1b4;
+}
+
+.dash-calendar .day-number {
+    border-radius: 50%;
+}
+
+.dash-calendar .day-name {
+    color: #8d9990;
+}
+
+.dash-calendar .day-number.today {
+    background: #a4d1b4;
+    color: #0b0f0c;
+    font-weight: 700;
+}
+
+.dash-calendar .day-number:selected {
+    background: rgba(164, 209, 180, 0.3);
+    color: #a4d1b4;
+}
+
+.dash-calendar .day-number:selected.today {
+    background: #a4d1b4;
+    color: #0b0f0c;
 }
 
 /* --- System Resource Island --- */
@@ -280,41 +447,41 @@ window {
 }
 
 .notif-dropdown {
-    background: rgba(16, 23, 19, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.2);
-    border-radius: 16px;
-    padding: 12px;
+    background: rgba(12, 17, 23, 0.98);
+    border: 1px solid rgba(130, 207, 218, 0.24);
+    border-radius: 20px;
+    padding: 14px;
     min-width: 400px;
     min-height: 520px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 }
 
 .notif-header {
-    padding: 4px 6px 8px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 6px;
+    padding: 5px 6px 11px 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 8px;
 }
 
 .notif-header-title {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 15px;
     color: #dee8df;
 }
 
 .notif-clear-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 2px 8px;
+    background: rgba(130, 207, 218, 0.1);
+    border: 1px solid rgba(130, 207, 218, 0.16);
+    border-radius: 999px;
+    padding: 4px 10px;
     color: #a4aea5;
     font-size: 11px;
     transition: all 150ms ease;
 }
 
 .notif-clear-btn:hover {
-    background: rgba(250, 116, 111, 0.2);
-    border-color: #fa746f;
-    color: #fa746f;
+    background: rgba(250, 116, 111, 0.16);
+    border-color: rgba(250, 116, 111, 0.7);
+    color: #ff9388;
 }
 
 .notif-empty {
@@ -333,41 +500,92 @@ window {
     font-weight: 500;
 }
 
+/* --- Notification Keyframe Animations --- */
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toast-out {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+}
+
 /* --- Notification Cards & Toasts --- */
 .toast-window {
     background: transparent;
 }
 
+/* Base card (used inside the notification center history) */
 .notif-toast {
-    background: rgba(26, 33, 28, 0.94);
+    background: rgba(14, 20, 17, 0.96);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 8px 12px;
+    border-left: 4px solid #a4d1b4;
+    border-radius: 14px;
+    padding: 11px 13px;
     color: #dee8df;
     margin: 2px 0;
-    transition: all 150ms ease;
+    transition: background 150ms ease, border-color 150ms ease;
 }
 
+/* Live toast popup — distinct freeyuh island look */
 .toast-window .notif-toast {
-    background: rgba(16, 23, 19, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.2);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    background: rgba(10, 16, 12, 0.97);
+    border: 1px solid rgba(164, 209, 180, 0.22);
+    border-left: 4px solid #a4d1b4;
+    border-radius: 16px;
+    box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+        0 0 18px rgba(164, 209, 180, 0.08);
 }
 
+/* Critical urgency — red accent */
 .notif-toast.critical {
-    border-left: 3px solid #fa746f;
+    border-left: 4px solid #fa746f;
+    border-color: rgba(250, 116, 111, 0.35);
+    box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.75),
+        0 0 18px rgba(250, 116, 111, 0.14);
 }
 
+/* Slide-in animation applied when toast is first shown */
+.toast-window .notif-toast.toast-entering {
+    animation: toast-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Slide-out animation applied just before the widget is removed */
+.toast-window .notif-toast.toast-leaving {
+    animation: toast-out 200ms ease-in both;
+    pointer-events: none;
+}
+
+/* App name chip */
 .notif-app {
     font-size: 10px;
-    font-weight: bold;
+    font-weight: 800;
     text-transform: uppercase;
-    color: #a4d1b4;
-    background: rgba(164, 209, 180, 0.12);
-    padding: 1px 6px;
+    letter-spacing: 0.5px;
+    color: #7ad9bc;
+    background: rgba(122, 217, 188, 0.14);
+    border: 1px solid rgba(122, 217, 188, 0.2);
+    padding: 1px 7px;
     border-radius: 6px;
 }
 
+/* Close button inside notification center cards */
 .notif-card-close {
     background: transparent;
     border: none;
@@ -378,20 +596,24 @@ window {
 }
 
 .notif-card-close:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.10);
     color: #dee8df;
 }
 
+/* Notification summary / title */
 .notif-title {
-    font-weight: bold;
-    font-size: 13px;
+    font-weight: 700;
+    font-size: 14px;
     color: #ffffff;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
+/* Notification body text */
 .notif-body {
     font-size: 12px;
-    color: #a4aea5;
+    color: #8d9990;
+    margin-top: 1px;
+    line-height: 1.45;
 }
 
 .notif-center scrollbar {
@@ -407,13 +629,13 @@ window {
 }
 
 .qs-dropdown {
-    background: rgba(14, 19, 16, 0.95);
-    border: 1px solid rgba(164, 209, 180, 0.2);
+    background: rgba(12, 17, 23, 0.98);
+    border: 1px solid rgba(130, 207, 218, 0.24);
     border-radius: 24px;
-    padding: 16px;
+    padding: 18px;
     min-width: 380px;
     min-height: 480px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
 .qs-page {
@@ -422,13 +644,13 @@ window {
 
 /* --- Header Row --- */
 .qs-header-row {
-    padding: 2px 4px 10px 4px;
+    padding: 2px 4px 12px 4px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     margin-bottom: 8px;
 }
 
 .qs-header-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
     color: #ffffff;
 }
@@ -455,21 +677,21 @@ window {
 }
 
 .qs-tile {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    padding: 6px 10px;
+    background: rgba(27, 39, 48, 0.86);
+    border: 1px solid rgba(130, 207, 218, 0.12);
+    border-radius: 16px;
+    padding: 8px 10px;
     transition: all 150ms ease;
 }
 
 .qs-tile:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(164, 209, 180, 0.25);
+    background: rgba(35, 52, 61, 0.96);
+    border-color: rgba(130, 207, 218, 0.35);
 }
 
 .qs-tile.active {
-    background: rgba(164, 209, 180, 0.12);
-    border-color: rgba(164, 209, 180, 0.35);
+    background: rgba(63, 116, 117, 0.34);
+    border-color: rgba(130, 207, 218, 0.5);
 }
 
 .qs-tile-icon-btn {
@@ -489,7 +711,7 @@ window {
 }
 
 .qs-tile.active .qs-tile-icon-btn {
-    background: #a4d1b4;
+    background: #82cfd7;
     color: #0b0f0c;
 }
 
@@ -512,7 +734,7 @@ window {
 }
 
 .qs-tile.active .qs-tile-sub {
-    color: #a4d1b4;
+    color: #82cfd7;
 }
 
 .qs-tile-arrow-btn {
@@ -534,10 +756,10 @@ window {
 
 /* --- Volume Slider Card --- */
 .qs-slider-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    padding: 8px 12px;
+    background: rgba(22, 31, 39, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 9px 12px;
     margin-top: 4px;
 }
 
@@ -548,7 +770,7 @@ window {
     min-width: 32px;
     min-height: 32px;
     font-size: 16px;
-    color: #a4d1b4;
+    color: #82cfd7;
     padding: 0;
     transition: all 150ms ease;
 }
@@ -569,7 +791,7 @@ window {
 }
 
 .qs-volume-scale highlight {
-    background: #a4d1b4;
+    background: #82cfd7;
     border-radius: 999px;
     min-height: 6px;
 }
