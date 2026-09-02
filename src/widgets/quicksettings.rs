@@ -78,12 +78,12 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     qs_window.set_margin(Edge::Right, 60);
     qs_window.set_keyboard_mode(KeyboardMode::OnDemand);
     qs_window.set_exclusive_zone(0);
-    qs_window.set_default_size(380, 480);
+    qs_window.set_default_size(440, 540);
     qs_window.add_css_class("qs-window");
 
     let dropdown = Box::new(Orientation::Vertical, 0);
     dropdown.add_css_class("qs-dropdown");
-    dropdown.set_width_request(380);
+    dropdown.set_width_request(440);
 
     // Multi-page navigation stack
     let stack = Stack::new();
@@ -118,13 +118,15 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     main_page.append(&header_box);
 
     // Quick Tiles Grid (Wi-Fi & Bluetooth side-by-side or stacked tiles)
-    let tiles_box = Box::new(Orientation::Vertical, 8);
+    let tiles_box = Box::new(Orientation::Horizontal, 10);
     tiles_box.add_css_class("qs-tiles-container");
+    tiles_box.set_homogeneous(true);
 
     // --- Wi-Fi Tile ---
     let wifi_tile = Box::new(Orientation::Horizontal, 10);
     wifi_tile.add_css_class("qs-tile");
     wifi_tile.set_valign(Align::Center);
+    wifi_tile.set_hexpand(true);
 
     let wifi_toggle_btn = Button::new();
     wifi_toggle_btn.add_css_class("qs-tile-icon-btn");
@@ -166,6 +168,7 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     let bt_tile = Box::new(Orientation::Horizontal, 10);
     bt_tile.add_css_class("qs-tile");
     bt_tile.set_valign(Align::Center);
+    bt_tile.set_hexpand(true);
 
     let bt_toggle_btn = Button::new();
     bt_toggle_btn.add_css_class("qs-tile-icon-btn");

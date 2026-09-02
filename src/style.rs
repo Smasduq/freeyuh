@@ -451,8 +451,8 @@ window {
     border: 1px solid rgba(130, 207, 218, 0.24);
     border-radius: 20px;
     padding: 14px;
-    min-width: 400px;
-    min-height: 520px;
+    min-width: 420px;
+    min-height: 540px;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 }
 
@@ -536,7 +536,7 @@ window {
     border-radius: 14px;
     padding: 11px 13px;
     color: #dee8df;
-    margin: 2px 0;
+    margin: 3px 0;
     transition: background 150ms ease, border-color 150ms ease;
 }
 
@@ -633,19 +633,19 @@ window {
     border: 1px solid rgba(130, 207, 218, 0.24);
     border-radius: 24px;
     padding: 18px;
-    min-width: 380px;
-    min-height: 480px;
+    min-width: 440px;
+    min-height: 540px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.78), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
 .qs-page {
-    padding: 2px;
+    padding: 2px 1px;
 }
 
 /* --- Header Row --- */
 .qs-header-row {
     padding: 2px 4px 12px 4px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(130, 207, 218, 0.14);
     margin-bottom: 8px;
 }
 
@@ -673,14 +673,14 @@ window {
 
 /* --- GNOME Quick Toggle Tiles Grid --- */
 .qs-tiles-container {
-    margin-bottom: 6px;
+    margin-bottom: 2px;
 }
 
 .qs-tile {
     background: rgba(27, 39, 48, 0.86);
     border: 1px solid rgba(130, 207, 218, 0.12);
     border-radius: 16px;
-    padding: 8px 10px;
+    padding: 9px 10px;
     transition: all 150ms ease;
 }
 
@@ -722,13 +722,13 @@ window {
 }
 
 .qs-tile-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: #ffffff;
 }
 
 .qs-tile-sub {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     color: #8d9990;
 }
@@ -760,7 +760,7 @@ window {
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 9px 12px;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .qs-slider-mute-btn {
@@ -810,7 +810,8 @@ window {
     font-size: 11px;
     font-weight: 600;
     color: #8d9990;
-    min-width: 32px;
+    min-width: 36px;
+    text-align: right;
 }
 
 /* --- Detail Navigation Bar --- */
@@ -905,8 +906,8 @@ switch.qs-switch:checked slider {
 }
 
 .qs-item {
-    background: transparent;
-    border: none;
+    background: rgba(27, 39, 48, 0.42);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 12px;
     padding: 8px 10px;
     margin: 2px 0;
@@ -914,7 +915,8 @@ switch.qs-switch:checked slider {
 }
 
 .qs-item:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(35, 52, 61, 0.72);
+    border-color: rgba(130, 207, 218, 0.2);
 }
 
 .qs-item.connected .qs-item-name {
