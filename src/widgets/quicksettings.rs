@@ -232,6 +232,34 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     volume_card.append(&volume_pct_label);
 
     main_page.append(&volume_card);
+
+    // --- Screen Brightness Slider Card ---
+    let bright_card = Box::new(Orientation::Horizontal, 10);
+    bright_card.add_css_class("qs-slider-card");
+    bright_card.set_valign(Align::Center);
+
+    let bright_icon_btn = Box::new(Orientation::Horizontal, 0);
+    bright_icon_btn.add_css_class("qs-slider-mute-btn");
+    let bright_icon_lbl = Label::new(Some("󰃠"));
+    bright_icon_lbl.add_css_class("qs-slider-icon");
+    bright_icon_btn.append(&bright_icon_lbl);
+    bright_card.append(&bright_icon_btn);
+
+    let bright_scale = Scale::with_range(Orientation::Horizontal, 1.0, 100.0, 1.0);
+    bright_scale.add_css_class("qs-volume-scale");
+    bright_scale.add_css_class("qs-brightness-scale");
+    bright_scale.set_hexpand(true);
+    bright_scale.set_draw_value(false);
+    let initial_b = crate::services::brightness::query().unwrap_or(80);
+    bright_scale.set_value(initial_b as f64);
+    bright_icon_lbl.set_text(crate::services::brightness::icon(initial_b));
+    bright_card.append(&bright_scale);
+
+    let bright_pct_label = Label::new(Some(&format!("{initial_b}%")));
+    bright_pct_label.add_css_class("qs-slider-pct");
+    bright_card.append(&bright_pct_label);
+
+    main_page.append(&bright_card);
     stack.add_named(&main_page, Some("main"));
 
     // =========================================================================
@@ -583,6 +611,18 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
         });
     }
 
+    // --- Brightness Slider Signal Wiring ---
+    {
+        let b_icon = bright_icon_lbl.clone();
+        let b_pct = bright_pct_label.clone();
+        bright_scale.connect_value_changed(move |scale| {
+            let val = scale.value().round() as u8;
+            crate::services::brightness::set_brightness(val);
+            b_pct.set_text(&format!("{val}%"));
+            b_icon.set_text(crate::services::brightness::icon(val));
+        });
+    }
+
     // --- Wi-Fi Detail Logic & Refresh ---
     let reload_wifi = {
         let list_box = wifi_list_box.clone();
@@ -864,11 +904,19 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
         let vol_scale = volume_scale.clone();
         let pill_bat = bat_icon.clone();
         let header_bat = header_battery.clone();
+        let b_scale = bright_scale.clone();
+        let b_pct = bright_pct_label.clone();
+        let b_icon = bright_icon_lbl.clone();
         Rc::new(move || {
             reload_w();
             reload_b();
             update_overview_audio(&pill_aud, &mute_ic, &mute_btn_cl, &vol_pct, &vol_scale, true);
             update_overview_battery(&pill_bat, &header_bat);
+            if let Some(cur_b) = crate::services::brightness::query() {
+                b_scale.set_value(cur_b as f64);
+                b_pct.set_text(&format!("{cur_b}%"));
+                b_icon.set_text(crate::services::brightness::icon(cur_b));
+            }
         })
     };
 

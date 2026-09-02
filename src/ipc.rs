@@ -93,11 +93,21 @@ pub fn spawn_server(tx: Sender<Event>) {
                         let _ = crate::services::bluetooth::set_enabled(next);
                         let _ = tx_cl.send(Event::BluetoothChanged);
                     }
+                    "brightness-up" => {
+                        crate::services::brightness::change_brightness(5);
+                    }
+                    "brightness-down" => {
+                        crate::services::brightness::change_brightness(-5);
+                    }
                     other => {
                         if other.starts_with("volume-set ") {
                             if let Ok(pct) = other[11..].trim().parse::<u8>() {
                                 crate::services::audio::set_volume(pct);
                                 let _ = tx_cl.send(Event::AudioChanged);
+                            }
+                        } else if other.starts_with("brightness-set ") {
+                            if let Ok(pct) = other[15..].trim().parse::<u8>() {
+                                crate::services::brightness::set_brightness(pct);
                             }
                         } else {
                             response = "unknown command";

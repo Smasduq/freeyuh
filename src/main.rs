@@ -30,6 +30,8 @@ fn main() {
                     println!("  freeyuh volume-set <0-100>          Set audio volume level");
                     println!("  freeyuh wifi-toggle                 Toggle Wi-Fi on/off");
                     println!("  freeyuh bt-toggle                   Toggle Bluetooth on/off");
+                    println!("  freeyuh brightness-set <1-100>      Set screen brightness percentage");
+                    println!("  freeyuh brightness-up / down        Increase/decrease brightness (+-5%)");
                     return;
                 }
                 _ => {
