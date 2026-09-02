@@ -171,6 +171,15 @@ impl NotificationWidget {
         self.center_window.hide();
     }
 
+    /// Toggle the notification center window visibility.
+    pub fn toggle_center(&mut self) {
+        if self.center_window.is_visible() {
+            self.hide_center();
+        } else {
+            self.show_center();
+        }
+    }
+
     /// Access to the center dropdown so hover wiring can attach to it.
     pub fn center_dropdown(&self) -> &gtk4::Box {
         &self.center_dropdown
@@ -215,6 +224,7 @@ impl NotificationWidget {
             }
             Event::ShowNotificationCenter => self.show_center(),
             Event::HideNotificationCenter => self.hide_center(),
+            Event::ToggleNotifications => self.toggle_center(),
             _ => {}
         }
     }

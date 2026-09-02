@@ -39,6 +39,12 @@ pub enum Event {
     ShowNotificationCenter,
     /// Hide the notification center window.
     HideNotificationCenter,
+    /// Toggle notification center window visibility.
+    ToggleNotifications,
+    /// Toggle quick settings window visibility.
+    ToggleQuickSettings,
+    /// Reload application CSS theme.
+    ReloadStyle,
     /// Clear all notifications from history.
     ClearAllNotifications,
     /// Dismiss a specific notification from history.

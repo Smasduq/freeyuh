@@ -34,6 +34,7 @@ pub fn build(app: &Application) {
     window.set_anchor(Edge::Right, true);
     window.set_exclusive_zone(BAR_HEIGHT);
     window.set_default_size(-1, BAR_HEIGHT);
+    window.add_css_class("bar-window");
 
     // Shared event bus: every producer sends into this single channel.
     let (tx, rx) = mpsc::channel::<Event>();
@@ -65,7 +66,7 @@ pub fn build(app: &Application) {
     let (clock_pill, clock_label) = widgets::clock::create(app);
     center.append(&clock_pill);
 
-    // Right: system info, network, bluetooth, audio, notifications
+    // Right: system info, unified quicksettings (network/bluetooth/audio), notifications
     let right = Box::new(Orientation::Horizontal, 4);
     right.set_halign(Align::End);
     right.set_valign(Align::Center);
@@ -73,15 +74,11 @@ pub fn build(app: &Application) {
     right.set_margin_end(8);
 
     let (sys_box, sys_labels) = widgets::sysinfo::create();
-    let (network_btn, network_label) = widgets::network::create(app);
-    let (bt_btn, bt_label) = widgets::bluetooth::create(app);
-    let audio_label = widgets::audio::create();
+    let (qs_btn, qs_labels, qs_window, qs_reload) = widgets::quicksettings::create(app);
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
 
     right.append(&sys_box);
-    right.append(&network_btn);
-    right.append(&bt_btn);
-    right.append(&audio_label);
+    right.append(&qs_btn);
     right.append(&bell);
 
     let center_dropdown = notif_widget.center_dropdown().clone();
@@ -97,9 +94,10 @@ pub fn build(app: &Application) {
     widgets::window::refresh(&window_title);
     widgets::clock::update(&clock_label);
     widgets::sysinfo::update(&sys_labels);
-    widgets::network::refresh(&network_label);
-    widgets::bluetooth::refresh(&bt_label);
-    widgets::audio::refresh(&audio_label);
+    widgets::quicksettings::refresh_network(&qs_labels);
+    widgets::quicksettings::refresh_bluetooth(&qs_labels);
+    widgets::quicksettings::refresh_audio(&qs_labels);
+    widgets::quicksettings::refresh_battery(&qs_labels);
 
     // The bell opens the notification center on hover and closes it when the
     // pointer leaves both the bell and the center window.
@@ -116,57 +114,54 @@ pub fn build(app: &Application) {
     });
 
     let bell_motion = EventControllerMotion::new();
-    bell_motion.connect_enter({
-        let hide_source = hide_source.clone();
-        let tx = tx.clone();
-        move |_, _, _| {
-            if let Some(source) = hide_source.take() {
-                source.remove();
-            }
-            let _ = tx.send(Event::ShowNotificationCenter);
+    let tx_enter = tx.clone();
+    let hide_source_enter = hide_source.clone();
+    bell_motion.connect_enter(move |_, _, _| {
+        if let Some(source) = hide_source_enter.take() {
+            source.remove();
         }
+        let _ = tx_enter.send(Event::ShowNotificationCenter);
     });
-    bell_motion.connect_leave({
-        let hide_source = hide_source.clone();
-        let tx = tx.clone();
-        move |_| {
-            let tx = tx.clone();
-            let hide_source_cb = hide_source.clone();
-            let source = glib::timeout_add_local(HIDE_DELAY, move || {
-                hide_source_cb.set(None);
-                let _ = tx.send(Event::HideNotificationCenter);
-                glib::ControlFlow::Break
-            });
-            hide_source.set(Some(source));
-        }
+
+    let tx_leave = tx.clone();
+    let hide_source_leave = hide_source.clone();
+    bell_motion.connect_leave(move |_| {
+        let tx_cb = tx_leave.clone();
+        let hide_source_cb = hide_source_leave.clone();
+        let source = glib::timeout_add_local(HIDE_DELAY, move || {
+            hide_source_cb.set(None);
+            let _ = tx_cb.send(Event::HideNotificationCenter);
+            glib::ControlFlow::Break
+        });
+        hide_source_leave.set(Some(source));
     });
     bell.add_controller(bell_motion);
 
-    // Center window: cancel hide while hovered, schedule hide on leave.
+    // Keep the center open while the pointer is over it.
     let center_motion = EventControllerMotion::new();
-    center_motion.connect_enter({
-        let hide_source = hide_source.clone();
-        move |_, _, _| {
-            if let Some(source) = hide_source.take() {
-                source.remove();
-            }
+    let hide_source_dropdown = hide_source.clone();
+    center_motion.connect_enter(move |_, _, _| {
+        if let Some(source) = hide_source_dropdown.take() {
+            source.remove();
         }
     });
-    center_motion.connect_leave({
-        let hide_source = hide_source.clone();
-        let tx = tx.clone();
-        move |_| {
-            let tx = tx.clone();
-            let hide_source_cb = hide_source.clone();
-            let source = glib::timeout_add_local(HIDE_DELAY, move || {
-                hide_source_cb.set(None);
-                let _ = tx.send(Event::HideNotificationCenter);
-                glib::ControlFlow::Break
-            });
-            hide_source.set(Some(source));
-        }
+
+    let tx_dropdown_leave = tx.clone();
+    let hide_source_dropdown_leave = hide_source.clone();
+    center_motion.connect_leave(move |_| {
+        let tx_cb = tx_dropdown_leave.clone();
+        let hide_source_cb = hide_source_dropdown_leave.clone();
+        let source = glib::timeout_add_local(HIDE_DELAY, move || {
+            hide_source_cb.set(None);
+            let _ = tx_cb.send(Event::HideNotificationCenter);
+            glib::ControlFlow::Break
+        });
+        hide_source_dropdown_leave.set(Some(source));
     });
     center_dropdown.add_controller(center_motion);
+
+    // Spawn IPC Unix Socket server for external keybinds and shell commands.
+    crate::ipc::spawn_server(tx.clone());
 
     // Spawn the background event producers.
     let _producers: Vec<EventProducer> = vec![
@@ -178,6 +173,8 @@ pub fn build(app: &Application) {
     ];
 
     // Single main-thread reactor: drain the channel and dispatch to widgets.
+    let qs_win_cl = qs_window.clone();
+    let qs_rel_cl = qs_reload.clone();
     glib::timeout_add_local(POLL_INTERVAL, move || {
         loop {
             match rx.recv_timeout(Duration::from_millis(1)) {
@@ -187,9 +184,9 @@ pub fn build(app: &Application) {
                     &window_title,
                     &clock_label,
                     &sys_labels,
-                    &network_label,
-                    &bt_label,
-                    &audio_label,
+                    &qs_labels,
+                    &qs_win_cl,
+                    &qs_rel_cl,
                     &mut notif_widget,
                 ),
                 Err(mpsc::RecvTimeoutError::Timeout) => break,
@@ -209,9 +206,9 @@ fn dispatch(
     window_title: &gtk4::Label,
     clock_label: &gtk4::Label,
     sys_labels: &[gtk4::Label],
-    network_label: &gtk4::Label,
-    bt_label: &gtk4::Label,
-    audio_label: &gtk4::Label,
+    qs_labels: &widgets::quicksettings::QuickSettingsLabels,
+    qs_window: &gtk4::ApplicationWindow,
+    qs_reload: &Rc<dyn Fn()>,
     notif_widget: &mut widgets::notifications::NotificationWidget,
 ) {
     match event {
@@ -223,16 +220,19 @@ fn dispatch(
         }
         Event::ClockTick => widgets::clock::update(clock_label),
         Event::SystemTick => widgets::sysinfo::update_system(sys_labels),
-        Event::BatteryChanged => widgets::sysinfo::update_battery(sys_labels),
-        Event::NetworkChanged => widgets::network::refresh(network_label),
-        Event::BluetoothChanged => widgets::bluetooth::refresh(bt_label),
-        Event::AudioChanged => widgets::audio::refresh(audio_label),
+        Event::BatteryChanged => widgets::quicksettings::refresh_battery(qs_labels),
+        Event::NetworkChanged => widgets::quicksettings::refresh_network(qs_labels),
+        Event::BluetoothChanged => widgets::quicksettings::refresh_bluetooth(qs_labels),
+        Event::AudioChanged => widgets::quicksettings::refresh_audio(qs_labels),
+        Event::ToggleQuickSettings => widgets::quicksettings::toggle(qs_window, qs_reload),
+        Event::ReloadStyle => style::load(),
         Event::Notification(_)
         | Event::NotificationClosed { .. }
         | Event::ClearAllNotifications
         | Event::DismissNotification(_)
         | Event::ShowNotificationCenter
-        | Event::HideNotificationCenter => {
+        | Event::HideNotificationCenter
+        | Event::ToggleNotifications => {
             notif_widget.handle(&event);
         }
     }
