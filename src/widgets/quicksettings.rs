@@ -117,6 +117,66 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
 
     main_page.append(&header_box);
 
+    // Audio and brightness controls lead the overview, with connectivity below.
+    let volume_card = Box::new(Orientation::Horizontal, 10);
+    volume_card.add_css_class("qs-slider-card");
+    volume_card.set_valign(Align::Center);
+
+    let mute_btn = Button::new();
+    mute_btn.add_css_class("qs-slider-mute-btn");
+    mute_btn.set_cursor_from_name(Some("pointer"));
+    let mute_icon = Label::new(None);
+    mute_icon.set_use_markup(true);
+    mute_icon.set_markup("󰕾");
+    mute_icon.set_halign(Align::Center);
+    mute_icon.set_valign(Align::Center);
+    mute_btn.set_child(Some(&mute_icon));
+    volume_card.append(&mute_btn);
+
+    let volume_scale = Scale::with_range(Orientation::Horizontal, 0.0, 100.0, 1.0);
+    volume_scale.add_css_class("qs-volume-scale");
+    volume_scale.set_hexpand(true);
+    volume_scale.set_draw_value(false);
+    if let Some(state) = audio::query() {
+        volume_scale.set_value(state.volume_percent as f64);
+    }
+    volume_card.append(&volume_scale);
+
+    let volume_pct_label = Label::new(Some("80%"));
+    volume_pct_label.add_css_class("qs-slider-pct");
+    volume_card.append(&volume_pct_label);
+    main_page.append(&volume_card);
+
+    let bright_card = Box::new(Orientation::Horizontal, 10);
+    bright_card.add_css_class("qs-slider-card");
+    bright_card.set_valign(Align::Center);
+
+    let bright_icon_btn = Box::new(Orientation::Horizontal, 0);
+    bright_icon_btn.add_css_class("qs-slider-mute-btn");
+    bright_icon_btn.set_halign(Align::Center);
+    bright_icon_btn.set_valign(Align::Center);
+    let bright_icon_lbl = Label::new(Some("󰃠"));
+    bright_icon_lbl.add_css_class("qs-slider-icon");
+    bright_icon_lbl.set_halign(Align::Center);
+    bright_icon_lbl.set_valign(Align::Center);
+    bright_icon_btn.append(&bright_icon_lbl);
+    bright_card.append(&bright_icon_btn);
+
+    let bright_scale = Scale::with_range(Orientation::Horizontal, 1.0, 100.0, 1.0);
+    bright_scale.add_css_class("qs-volume-scale");
+    bright_scale.add_css_class("qs-brightness-scale");
+    bright_scale.set_hexpand(true);
+    bright_scale.set_draw_value(false);
+    let initial_b = crate::services::brightness::query().unwrap_or(80);
+    bright_scale.set_value(initial_b as f64);
+    bright_icon_lbl.set_text(crate::services::brightness::icon(initial_b));
+    bright_card.append(&bright_scale);
+
+    let bright_pct_label = Label::new(Some(&format!("{initial_b}%")));
+    bright_pct_label.add_css_class("qs-slider-pct");
+    bright_card.append(&bright_pct_label);
+    main_page.append(&bright_card);
+
     // Quick Tiles Grid (Wi-Fi & Bluetooth side-by-side or stacked tiles)
     let tiles_box = Box::new(Orientation::Horizontal, 10);
     tiles_box.add_css_class("qs-tiles-container");
@@ -207,62 +267,6 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     tiles_box.append(&bt_tile);
     main_page.append(&tiles_box);
 
-    // --- Audio Volume Slider Card ---
-    let volume_card = Box::new(Orientation::Horizontal, 10);
-    volume_card.add_css_class("qs-slider-card");
-    volume_card.set_valign(Align::Center);
-
-    let mute_btn = Button::new();
-    mute_btn.add_css_class("qs-slider-mute-btn");
-    mute_btn.set_cursor_from_name(Some("pointer"));
-    let mute_icon = Label::new(None);
-    mute_icon.set_use_markup(true);
-    mute_icon.set_markup("󰕾");
-    mute_btn.set_child(Some(&mute_icon));
-    volume_card.append(&mute_btn);
-
-    let volume_scale = Scale::with_range(Orientation::Horizontal, 0.0, 100.0, 1.0);
-    volume_scale.add_css_class("qs-volume-scale");
-    volume_scale.set_hexpand(true);
-    volume_scale.set_draw_value(false);
-    if let Some(state) = audio::query() {
-        volume_scale.set_value(state.volume_percent as f64);
-    }
-    volume_card.append(&volume_scale);
-
-    let volume_pct_label = Label::new(Some("80%"));
-    volume_pct_label.add_css_class("qs-slider-pct");
-    volume_card.append(&volume_pct_label);
-
-    main_page.append(&volume_card);
-
-    // --- Screen Brightness Slider Card ---
-    let bright_card = Box::new(Orientation::Horizontal, 10);
-    bright_card.add_css_class("qs-slider-card");
-    bright_card.set_valign(Align::Center);
-
-    let bright_icon_btn = Box::new(Orientation::Horizontal, 0);
-    bright_icon_btn.add_css_class("qs-slider-mute-btn");
-    let bright_icon_lbl = Label::new(Some("󰃠"));
-    bright_icon_lbl.add_css_class("qs-slider-icon");
-    bright_icon_btn.append(&bright_icon_lbl);
-    bright_card.append(&bright_icon_btn);
-
-    let bright_scale = Scale::with_range(Orientation::Horizontal, 1.0, 100.0, 1.0);
-    bright_scale.add_css_class("qs-volume-scale");
-    bright_scale.add_css_class("qs-brightness-scale");
-    bright_scale.set_hexpand(true);
-    bright_scale.set_draw_value(false);
-    let initial_b = crate::services::brightness::query().unwrap_or(80);
-    bright_scale.set_value(initial_b as f64);
-    bright_icon_lbl.set_text(crate::services::brightness::icon(initial_b));
-    bright_card.append(&bright_scale);
-
-    let bright_pct_label = Label::new(Some(&format!("{initial_b}%")));
-    bright_pct_label.add_css_class("qs-slider-pct");
-    bright_card.append(&bright_pct_label);
-
-    main_page.append(&bright_card);
     stack.add_named(&main_page, Some("main"));
 
     // =========================================================================
