@@ -411,90 +411,156 @@ const CSS: &str = r#"
     background: transparent;
 }
 
-/* --- Wi-Fi Connection Panel --- */
+/* --- Wi-Fi Connection Panel (Caelestia / M3 Expressive) --- */
 .wifi-window {
     background: transparent;
 }
 
 .wifi-dropdown {
-    background: rgba(14, 20, 16, 0.96);
-    border: 1px solid rgba(164, 209, 180, 0.22);
+    background: rgba(14, 19, 16, 0.95);
+    border: 1px solid rgba(164, 209, 180, 0.2);
+    border-radius: 24px;
+    padding: 16px;
+    min-width: 410px;
+    min-height: 520px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+/* Hero QuickSettings Module */
+.wifi-hero-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 18px;
-    padding: 14px;
-    min-width: 390px;
-    min-height: 500px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+    padding: 12px 14px;
+    margin-bottom: 2px;
 }
 
-.wifi-header {
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 8px;
+.wifi-hero-icon-box {
+    min-width: 42px;
+    min-height: 42px;
+    background: rgba(164, 209, 180, 0.15);
+    border-radius: 13px;
+    margin-right: 4px;
 }
 
-.wifi-title-icon {
+.wifi-hero-icon {
+    font-size: 20px;
     color: #a4d1b4;
-    font-size: 18px;
 }
 
-.wifi-header-title {
+.wifi-hero-title {
+    font-size: 15px;
+    font-weight: 700;
     color: #ffffff;
-    font-weight: bold;
-    font-size: 14px;
 }
 
-.wifi-header-subtitle {
-    color: #6e7870;
+.wifi-hero-subtitle {
     font-size: 11px;
+    font-weight: 500;
+    color: #8d9990;
     margin-top: -1px;
 }
 
-.wifi-rescan-btn {
+.wifi-hero-btn {
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
     color: #dee8df;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 4px 10px;
+    font-size: 14px;
     transition: all 150ms ease;
 }
 
-.wifi-rescan-btn:hover {
+.wifi-hero-btn:hover {
     background: rgba(164, 209, 180, 0.2);
     border-color: #a4d1b4;
     color: #a4d1b4;
 }
 
-.wifi-status-label {
+/* Material 3 Switch Component */
+switch.wifi-switch {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    transition: all 200ms ease;
+}
+
+switch.wifi-switch:checked {
+    background: #a4d1b4;
+}
+
+switch.wifi-switch slider {
+    background: #dee8df;
+    border-radius: 999px;
+    margin: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: all 200ms ease;
+}
+
+switch.wifi-switch:checked slider {
+    background: #0b0f0c;
+}
+
+/* Feedback banner */
+.wifi-status-banner {
+    background: rgba(164, 209, 180, 0.12);
+    border: 1px solid rgba(164, 209, 180, 0.25);
+    border-radius: 999px;
+    padding: 4px 14px;
     color: #a4d1b4;
     font-size: 11px;
-    padding: 4px 8px;
-    font-weight: 500;
+    font-weight: 600;
+    margin: 4px 0;
+}
+
+/* Section Header */
+.wifi-section-header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #6e7870;
+    margin: 8px 4px 2px 4px;
+}
+
+/* Network Items (M3 Expressive Tiles) */
+.wifi-list-box {
+    margin-top: 2px;
 }
 
 .wifi-item {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 10px 12px;
     margin: 3px 0;
-    transition: all 150ms ease;
+    transition: all 180ms ease;
 }
 
 .wifi-item:hover {
     background: rgba(255, 255, 255, 0.07);
-    border-color: rgba(164, 209, 180, 0.3);
+    border-color: rgba(164, 209, 180, 0.25);
 }
 
 .wifi-item.connected {
-    background: rgba(164, 209, 180, 0.09);
-    border: 1px solid rgba(164, 209, 180, 0.35);
+    background: linear-gradient(135deg, rgba(164, 209, 180, 0.13), rgba(122, 217, 188, 0.04));
+    border: 1px solid rgba(164, 209, 180, 0.38);
     border-left: 4px solid #a4d1b4;
 }
 
+.wifi-icon-chip {
+    min-width: 38px;
+    min-height: 38px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 11px;
+}
+
 .wifi-item-icon {
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .wifi-item-name {
@@ -504,10 +570,10 @@ const CSS: &str = r#"
 }
 
 .wifi-connected-badge {
-    background: rgba(164, 209, 180, 0.2);
-    color: #a4d1b4;
-    font-size: 10px;
-    font-weight: 600;
+    background: #a4d1b4;
+    color: #0b0f0c;
+    font-size: 9px;
+    font-weight: 700;
     padding: 1px 6px;
     border-radius: 4px;
 }
@@ -515,56 +581,60 @@ const CSS: &str = r#"
 .wifi-saved-badge {
     background: rgba(255, 255, 255, 0.08);
     color: #a4aea5;
-    font-size: 10px;
+    font-size: 9px;
+    font-weight: 500;
     padding: 1px 6px;
     border-radius: 4px;
 }
 
 .wifi-lock-icon {
     color: #6e7870;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .wifi-item-signal {
     color: #6e7870;
     font-size: 11px;
+    font-weight: 500;
 }
 
 .wifi-connect-btn {
     background: #a4d1b4;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     color: #0b0f0c;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 11px;
-    padding: 4px 12px;
+    padding: 5px 14px;
     transition: all 150ms ease;
 }
 
 .wifi-connect-btn:hover {
     background: #bbf0cb;
-    box-shadow: 0 0 8px rgba(164, 209, 180, 0.35);
+    box-shadow: 0 0 12px rgba(164, 209, 180, 0.4);
 }
 
 .wifi-disconnect-btn {
     background: rgba(250, 116, 111, 0.12);
-    border: 1px solid rgba(250, 116, 111, 0.3);
-    border-radius: 8px;
+    border: 1px solid rgba(250, 116, 111, 0.28);
+    border-radius: 10px;
     color: #fa746f;
     font-size: 11px;
-    font-weight: 500;
-    padding: 4px 10px;
+    font-weight: 600;
+    padding: 5px 12px;
     transition: all 150ms ease;
 }
 
 .wifi-disconnect-btn:hover {
     background: rgba(250, 116, 111, 0.25);
+    border-color: #fa746f;
 }
 
+/* Password Floating Box */
 .wifi-password-box {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(164, 209, 180, 0.18);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(164, 209, 180, 0.2);
+    border-radius: 12px;
     padding: 8px 10px;
     margin-top: 6px;
 }
@@ -575,11 +645,12 @@ const CSS: &str = r#"
     border-radius: 8px;
     color: #dee8df;
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 6px 10px;
 }
 
 .wifi-password-entry:focus {
     border-color: #a4d1b4;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .wifi-join-btn {
@@ -587,9 +658,14 @@ const CSS: &str = r#"
     border: none;
     border-radius: 8px;
     color: #0b0f0c;
-    font-weight: bold;
+    font-weight: 700;
     font-size: 11px;
-    padding: 5px 12px;
+    padding: 6px 14px;
+    transition: all 150ms ease;
+}
+
+.wifi-join-btn:hover {
+    background: #bbf0cb;
 }
 
 .wifi-cancel-btn {
@@ -597,8 +673,9 @@ const CSS: &str = r#"
     border: none;
     color: #6e7870;
     font-size: 12px;
-    padding: 5px 8px;
+    padding: 6px 10px;
     border-radius: 6px;
+    transition: all 150ms ease;
 }
 
 .wifi-cancel-btn:hover {
@@ -606,20 +683,22 @@ const CSS: &str = r#"
     background: rgba(255, 255, 255, 0.1);
 }
 
+/* Empty / Scanning states */
 .wifi-empty {
     padding: 40px 16px;
     color: #6e7870;
 }
 
 .wifi-empty-icon {
-    font-size: 32px;
-    margin-bottom: 6px;
+    font-size: 34px;
+    margin-bottom: 8px;
     color: #414a43;
 }
 
 .wifi-empty-text {
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
+    color: #dee8df;
 }
 
 .wifi-empty-sub {
@@ -632,5 +711,23 @@ const CSS: &str = r#"
     color: #a4aea5;
     font-size: 13px;
     padding: 20px;
+}
+
+/* Thin Custom Scrollbar */
+.wifi-scrolled-window scrollbar {
+    background: transparent;
+    border: none;
+    min-width: 4px;
+}
+
+.wifi-scrolled-window scrollbar slider {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    min-width: 4px;
+    border: none;
+}
+
+.wifi-scrolled-window scrollbar slider:hover {
+    background: rgba(164, 209, 180, 0.35);
 }
 "#;
