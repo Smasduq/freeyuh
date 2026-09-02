@@ -229,6 +229,25 @@ const CSS: &str = r#"
     color: #9cebcc;
 }
 
+/* --- Bluetooth Icon (Status Bar) --- */
+.bt-pill {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 3px 6px;
+    margin: 4px 1px;
+    transition: all 150ms ease;
+}
+
+.bt-pill:hover {
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.bt-label {
+    font-size: 14px;
+    color: #dee8df;
+}
+
 /* --- Audio Icon (Status Bar) --- */
 .sys-item.audio {
     background: transparent;
@@ -460,20 +479,19 @@ const CSS: &str = r#"
 }
 
 .wifi-hero-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: transparent;
+    border: none;
     border-radius: 999px;
     min-width: 32px;
     min-height: 32px;
     padding: 0;
-    color: #dee8df;
-    font-size: 14px;
+    color: #8d9990;
+    font-size: 15px;
     transition: all 150ms ease;
 }
 
 .wifi-hero-btn:hover {
-    background: rgba(164, 209, 180, 0.2);
-    border-color: #a4d1b4;
+    background: rgba(164, 209, 180, 0.18);
     color: #a4d1b4;
 }
 
@@ -801,6 +819,256 @@ switch.wifi-switch:checked slider {
 }
 
 .wifi-scrolled-window scrollbar slider:hover {
+    background: rgba(164, 209, 180, 0.35);
+}
+
+/* =========================================================================
+   BLUETOOTH PANEL (M3 Expressive / Caelestia)
+   ========================================================================= */
+
+.bt-window {
+    background: transparent;
+}
+
+.bt-dropdown {
+    background: rgba(14, 19, 16, 0.95);
+    border: 1px solid rgba(164, 209, 180, 0.2);
+    border-radius: 24px;
+    padding: 16px;
+    min-width: 390px;
+    min-height: 460px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+/* Hero QuickSettings Module */
+.bt-hero-card {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 4px 4px 12px 4px;
+    margin-bottom: 4px;
+}
+
+.bt-hero-icon-box {
+    background: transparent;
+    border: none;
+    margin-right: 4px;
+}
+
+.bt-hero-icon {
+    font-size: 20px;
+    color: #a4d1b4;
+}
+
+.bt-hero-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.bt-hero-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: #8d9990;
+    margin-top: -1px;
+}
+
+.bt-hero-btn {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    color: #8d9990;
+    font-size: 15px;
+    transition: all 150ms ease;
+}
+
+.bt-hero-btn:hover {
+    background: rgba(164, 209, 180, 0.18);
+    color: #a4d1b4;
+}
+
+/* Material 3 Switch Component */
+switch.bt-switch {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    border: none;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    transition: all 200ms ease;
+}
+
+switch.bt-switch:checked {
+    background: #a4d1b4;
+}
+
+switch.bt-switch slider {
+    background: #dee8df;
+    border-radius: 999px;
+    margin: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: all 200ms ease;
+}
+
+switch.bt-switch:checked slider {
+    background: #0b0f0c;
+}
+
+/* Feedback banner */
+.bt-status-banner {
+    background: rgba(164, 209, 180, 0.12);
+    border: 1px solid rgba(164, 209, 180, 0.25);
+    border-radius: 999px;
+    padding: 4px 14px;
+    color: #a4d1b4;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 4px 0;
+}
+
+/* Section Header */
+.bt-section-header {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: #6e7870;
+    margin: 8px 4px 4px 4px;
+}
+
+/* Device Items (Flat Caelestia List) */
+.bt-list-box {
+    margin-top: 2px;
+}
+
+.bt-item {
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin: 2px 0;
+    transition: all 150ms ease;
+}
+
+.bt-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.bt-item.connected {
+    background: transparent;
+    border: none;
+}
+
+.bt-item.connected .bt-item-name {
+    color: #a4d1b4;
+    font-weight: 700;
+}
+
+.bt-icon-chip {
+    background: transparent;
+    border: none;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.bt-item-icon {
+    font-size: 18px;
+}
+
+.bt-item-name {
+    color: #dee8df;
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.bt-connected-icon {
+    color: #a4d1b4;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.bt-paired-icon {
+    color: #6e7870;
+    font-size: 12px;
+}
+
+.bt-item-battery {
+    color: #8d9990;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.bt-connect-btn {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #8d9990;
+    font-size: 16px;
+    padding: 4px 8px;
+    transition: all 150ms ease;
+}
+
+.bt-connect-btn:hover {
+    background: rgba(164, 209, 180, 0.18);
+    color: #a4d1b4;
+}
+
+.bt-disconnect-btn {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #fa746f;
+    font-size: 16px;
+    padding: 4px 8px;
+    transition: all 150ms ease;
+}
+
+.bt-disconnect-btn:hover {
+    background: rgba(250, 116, 111, 0.18);
+    color: #fa746f;
+}
+
+/* Empty / Scanning states */
+.bt-empty {
+    padding: 40px 16px;
+    color: #6e7870;
+}
+
+.bt-empty-icon {
+    font-size: 34px;
+    margin-bottom: 8px;
+    color: #414a43;
+}
+
+.bt-empty-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+.bt-empty-sub {
+    font-size: 11px;
+    color: #6e7870;
+    margin-top: 2px;
+}
+
+/* Thin Custom Scrollbar */
+.bt-scrolled-window scrollbar {
+    background: transparent;
+    border: none;
+    min-width: 4px;
+}
+
+.bt-scrolled-window scrollbar slider {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    min-width: 4px;
+    border: none;
+}
+
+.bt-scrolled-window scrollbar slider:hover {
     background: rgba(164, 209, 180, 0.35);
 }
 "#;
