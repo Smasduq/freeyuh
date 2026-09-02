@@ -9,7 +9,7 @@ use sysinfo::System;
 
 /// Creates the system-info container shown on the right side.
 ///
-/// Returned labels order: `[cpu, mem, battery]`.
+/// Returned labels order: `[cpu, mem]`.
 pub fn create() -> (Box, Vec<Label>) {
     let container = Box::new(Orientation::Horizontal, 6);
     container.add_css_class("sysinfo-group");
@@ -23,15 +23,10 @@ pub fn create() -> (Box, Vec<Label>) {
     let mem_pill = make_pill("mem", "󰘚 --");
     mem_pill.set_tooltip_text(Some("Memory Usage"));
 
-    // Unified Battery pill (icon + percentage)
-    let bat_pill = make_pill("bat", "󰁹 --%");
-    bat_pill.set_tooltip_text(Some("Battery Status"));
-
     container.append(&cpu_pill);
     container.append(&mem_pill);
-    container.append(&bat_pill);
 
-    let labels = vec![cpu_pill, mem_pill, bat_pill];
+    let labels = vec![cpu_pill, mem_pill];
     (container, labels)
 }
 
@@ -148,7 +143,7 @@ pub fn update(labels: &[Label]) {
 }
 
 /// Pick a battery icon by charge level.
-fn battery_icon(percent: u8) -> &'static str {
+pub fn battery_icon(percent: u8) -> &'static str {
     match percent {
         0..=10 => "󰁺",
         11..=20 => "󰁻",
