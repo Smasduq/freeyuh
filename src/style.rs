@@ -12,25 +12,31 @@ pub fn load() {
 }
 
 const CSS: &str = r#"
-/* --- Top Bar Root --- */
+/* --- Top Bar Root (Transparent Island Carrier) --- */
+window.bar-window,
+window {
+    background: transparent;
+}
+
 .bar {
-    background: rgba(11, 15, 12, 0.94);
-    border-bottom: 1px solid rgba(164, 209, 180, 0.18);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-    padding: 0 10px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0 4px;
     color: #dee8df;
     font-family: "Adwaita Sans", "Inter", "JetBrainsMono Nerd Font", system-ui, sans-serif;
     font-size: 13px;
     min-height: 36px;
 }
 
-/* --- Workspaces Widget --- */
+/* --- Workspaces Island --- */
 .workspaces {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 999px;
-    padding: 4px 8px;
-    margin: 4px 4px 4px 2px;
+    padding: 4px 10px;
+    margin: 3px 4px 3px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .workspaces button.ws {
@@ -75,31 +81,33 @@ const CSS: &str = r#"
     background: rgba(164, 209, 180, 0.15);
 }
 
-/* --- Active Window Widget --- */
+/* --- Active Window Island --- */
 .active-window {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 999px;
-    padding: 3px 12px;
-    margin: 4px 4px;
-    color: #a4aea5;
+    padding: 4px 14px;
+    margin: 3px 4px;
+    color: #dee8df;
     font-size: 12px;
     font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* --- Clock Pill & Calendar --- */
+/* --- Clock & Calendar Island --- */
 .clock-pill {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 999px;
-    padding: 3px 14px;
-    margin: 4px 0;
-    transition: all 150ms ease;
+    padding: 4px 16px;
+    margin: 3px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: all 180ms ease;
 }
 
 .clock-pill:hover {
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(164, 209, 180, 0.25);
+    background: rgba(22, 30, 25, 0.95);
+    border-color: rgba(164, 209, 180, 0.3);
 }
 
 .clock-label {
@@ -147,19 +155,21 @@ const CSS: &str = r#"
     background: rgba(164, 209, 180, 0.2);
 }
 
-/* --- System Resource Items --- */
+/* --- System Resource Island --- */
 .sysinfo-group {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0 4px;
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin: 3px 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .sys-item {
     background: transparent;
     border: none;
     color: #dee8df;
-    padding: 0px 5px;
+    padding: 0px 4px;
     font-size: 12px;
     font-weight: 500;
 }
@@ -188,107 +198,65 @@ const CSS: &str = r#"
     color: #fa746f;
 }
 
-.sys-item.bat {
-    color: #a3f1bd;
+/* --- Unified Quick Settings Island (GNOME / Caelestia style) --- */
+.quicksettings-pill {
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin: 3px 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    transition: all 180ms ease;
 }
 
-.sys-item.bat.charging {
-    color: #a4d1b4;
-    font-weight: bold;
+.quicksettings-pill:hover {
+    background: rgba(22, 30, 25, 0.95);
+    border-color: rgba(164, 209, 180, 0.3);
 }
 
-.sys-item.bat.warning {
-    color: #cec06b;
+.qs-pill-icon {
+    font-size: 13px;
+    margin: 0 2px;
 }
 
-.sys-item.bat.critical {
-    color: #fa746f;
-    font-weight: bold;
-}
-
-/* --- Network Icon (Status Bar) --- */
-.network-pill {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    padding: 3px 6px;
-    margin: 4px 1px;
-    transition: all 150ms ease;
-}
-
-.network-pill:hover {
-    background: rgba(255, 255, 255, 0.09);
-}
-
-.network-pill.connected {
-    border: none;
-}
-
-.network-label {
-    font-size: 14px;
+.qs-pill-net {
     color: #9cebcc;
 }
 
-/* --- Bluetooth Icon (Status Bar) --- */
-.bt-pill {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    padding: 3px 6px;
-    margin: 4px 1px;
-    transition: all 150ms ease;
-}
-
-.bt-pill:hover {
-    background: rgba(255, 255, 255, 0.09);
-}
-
-.bt-label {
-    font-size: 14px;
+.qs-pill-bt {
     color: #dee8df;
 }
 
-/* --- Audio Icon (Status Bar) --- */
-.sys-item.audio {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    padding: 3px 6px;
-    margin: 4px 1px;
+.qs-pill-audio {
     color: #86dcce;
-    font-size: 12px;
     font-weight: 500;
-    transition: all 150ms ease;
 }
 
-.sys-item.audio:hover {
-    background: rgba(255, 255, 255, 0.09);
+.qs-pill-bat {
+    color: #a3f1bd;
+    font-weight: 500;
 }
 
-.sys-item.audio.muted {
-    color: #fa746f;
-}
-
-/* --- Notification Bell --- */
+/* --- Notification Bell Island --- */
 .bell {
-    background: transparent;
-    border: none;
-    border-radius: 6px;
+    background: rgba(14, 19, 16, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 4px 10px;
+    margin: 3px 0 3px 3px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     color: #a4aea5;
     font-size: 14px;
-    padding: 3px 6px;
-    margin: 4px 2px 4px 1px;
-    transition: all 150ms ease;
+    transition: all 180ms ease;
 }
 
 .bell:hover {
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(22, 30, 25, 0.95);
+    border-color: rgba(164, 209, 180, 0.3);
     color: #dee8df;
 }
 
 .bell.has-unread {
-    background: transparent;
-    border: none;
     color: #a4d1b4;
 }
 
@@ -430,73 +398,248 @@ const CSS: &str = r#"
     background: transparent;
 }
 
-/* --- Wi-Fi Connection Panel (Caelestia / M3 Expressive) --- */
-.wifi-window {
+/* =========================================================================
+   UNIFIED QUICK SETTINGS / CONTROL CENTER PANEL (GNOME / Caelestia M3)
+   ========================================================================= */
+
+.qs-window {
     background: transparent;
 }
 
-.wifi-dropdown {
+.qs-dropdown {
     background: rgba(14, 19, 16, 0.95);
     border: 1px solid rgba(164, 209, 180, 0.2);
     border-radius: 24px;
     padding: 16px;
-    min-width: 410px;
-    min-height: 520px;
+    min-width: 380px;
+    min-height: 480px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
-/* Hero QuickSettings Module */
-.wifi-hero-card {
-    background: transparent;
-    border: none;
+.qs-page {
+    padding: 2px;
+}
+
+/* --- Header Row --- */
+.qs-header-row {
+    padding: 2px 4px 10px 4px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 4px 4px 12px 4px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 }
 
-.wifi-hero-icon-box {
-    background: transparent;
-    border: none;
-    margin-right: 4px;
-}
-
-.wifi-hero-icon {
-    font-size: 20px;
-    color: #a4d1b4;
-}
-
-.wifi-hero-title {
+.qs-header-title {
     font-size: 15px;
     font-weight: 700;
     color: #ffffff;
 }
 
-.wifi-hero-subtitle {
+.qs-header-battery {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #dee8df;
+}
+
+.qs-header-battery.charging {
+    background: rgba(164, 209, 180, 0.15);
+    border-color: rgba(164, 209, 180, 0.3);
+    color: #a4d1b4;
+}
+
+/* --- GNOME Quick Toggle Tiles Grid --- */
+.qs-tiles-container {
+    margin-bottom: 6px;
+}
+
+.qs-tile {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 6px 10px;
+    transition: all 150ms ease;
+}
+
+.qs-tile:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(164, 209, 180, 0.25);
+}
+
+.qs-tile.active {
+    background: rgba(164, 209, 180, 0.12);
+    border-color: rgba(164, 209, 180, 0.35);
+}
+
+.qs-tile-icon-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 999px;
+    min-width: 38px;
+    min-height: 38px;
+    font-size: 16px;
+    color: #dee8df;
+    padding: 0;
+    transition: all 150ms ease;
+}
+
+.qs-tile-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.qs-tile.active .qs-tile-icon-btn {
+    background: #a4d1b4;
+    color: #0b0f0c;
+}
+
+.qs-tile-text-btn {
+    background: transparent;
+    border: none;
+    padding: 0 4px;
+}
+
+.qs-tile-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.qs-tile-sub {
     font-size: 11px;
     font-weight: 500;
     color: #8d9990;
-    margin-top: -1px;
 }
 
-.wifi-hero-btn {
+.qs-tile.active .qs-tile-sub {
+    color: #a4d1b4;
+}
+
+.qs-tile-arrow-btn {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 15px;
+    color: #8d9990;
+    padding: 0;
+    transition: all 150ms ease;
+}
+
+.qs-tile-arrow-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* --- Volume Slider Card --- */
+.qs-slider-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 8px 12px;
+    margin-top: 4px;
+}
+
+.qs-slider-mute-btn {
     background: transparent;
     border: none;
     border-radius: 999px;
     min-width: 32px;
     min-height: 32px;
+    font-size: 16px;
+    color: #a4d1b4;
     padding: 0;
-    color: #8d9990;
-    font-size: 15px;
     transition: all 150ms ease;
 }
 
-.wifi-hero-btn:hover {
+.qs-slider-mute-btn.muted {
+    color: #fa746f;
+}
+
+.qs-slider-mute-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.qs-volume-scale trough {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    min-height: 6px;
+    border: none;
+}
+
+.qs-volume-scale highlight {
+    background: #a4d1b4;
+    border-radius: 999px;
+    min-height: 6px;
+}
+
+.qs-volume-scale slider {
+    background: #dee8df;
+    border-radius: 999px;
+    min-width: 14px;
+    min-height: 14px;
+    margin: -4px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    border: none;
+}
+
+.qs-slider-pct {
+    font-size: 11px;
+    font-weight: 600;
+    color: #8d9990;
+    min-width: 32px;
+}
+
+/* --- Detail Navigation Bar --- */
+.qs-nav-bar {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 6px;
+}
+
+.qs-back-btn {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 18px;
+    color: #dee8df;
+    padding: 0;
+    transition: all 150ms ease;
+}
+
+.qs-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #a4d1b4;
+}
+
+.qs-nav-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.qs-rescan-btn {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 15px;
+    color: #8d9990;
+    padding: 0;
+    transition: all 150ms ease;
+}
+
+.qs-rescan-btn:hover {
     background: rgba(164, 209, 180, 0.18);
     color: #a4d1b4;
 }
 
 /* Material 3 Switch Component */
-switch.wifi-switch {
+switch.qs-switch {
     background: rgba(255, 255, 255, 0.14);
     border-radius: 999px;
     border: none;
@@ -506,11 +649,11 @@ switch.wifi-switch {
     transition: all 200ms ease;
 }
 
-switch.wifi-switch:checked {
+switch.qs-switch:checked {
     background: #a4d1b4;
 }
 
-switch.wifi-switch slider {
+switch.qs-switch slider {
     background: #dee8df;
     border-radius: 999px;
     margin: 2px;
@@ -518,12 +661,12 @@ switch.wifi-switch slider {
     transition: all 200ms ease;
 }
 
-switch.wifi-switch:checked slider {
+switch.qs-switch:checked slider {
     background: #0b0f0c;
 }
 
 /* Feedback banner */
-.wifi-status-banner {
+.qs-status-banner {
     background: rgba(164, 209, 180, 0.12);
     border: 1px solid rgba(164, 209, 180, 0.25);
     border-radius: 999px;
@@ -534,21 +677,12 @@ switch.wifi-switch:checked slider {
     margin: 4px 0;
 }
 
-/* Section Header */
-.wifi-section-header {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: #6e7870;
-    margin: 8px 4px 4px 4px;
-}
-
-/* Network Items (Flat Caelestia List) */
-.wifi-list-box {
+/* Detail Scrolled List Items (Flat Caelestia / Backgroundless) */
+.qs-list-box {
     margin-top: 2px;
 }
 
-.wifi-item {
+.qs-item {
     background: transparent;
     border: none;
     border-radius: 12px;
@@ -557,60 +691,66 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-item:hover {
+.qs-item:hover {
     background: rgba(255, 255, 255, 0.06);
 }
 
-.wifi-item.connected {
-    background: transparent;
-    border: none;
-}
-
-.wifi-item.connected .wifi-item-name {
+.qs-item.connected .qs-item-name {
     color: #a4d1b4;
     font-weight: 700;
 }
 
-.wifi-icon-chip {
+.qs-icon-chip {
     background: transparent;
     border: none;
     min-width: 24px;
     min-height: 24px;
 }
 
-.wifi-item-icon {
+.qs-item-icon {
     font-size: 16px;
 }
 
-.wifi-item-name {
+.qs-item-name {
     color: #dee8df;
     font-weight: 500;
     font-size: 13px;
 }
 
-.wifi-connected-icon {
+.qs-connected-icon {
     color: #a4d1b4;
     font-size: 14px;
     font-weight: bold;
 }
 
-.wifi-saved-icon {
+.qs-saved-icon {
     color: #6e7870;
     font-size: 12px;
 }
 
-.wifi-lock-icon {
+.qs-paired-icon {
     color: #6e7870;
     font-size: 12px;
 }
 
-.wifi-item-signal {
+.qs-lock-icon {
+    color: #6e7870;
+    font-size: 12px;
+}
+
+.qs-item-signal {
     color: #6e7870;
     font-size: 11px;
     font-weight: 500;
 }
 
-.wifi-connect-btn {
+.qs-item-battery {
+    color: #8d9990;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.qs-connect-btn {
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -620,12 +760,12 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-connect-btn:hover {
+.qs-connect-btn:hover {
     background: rgba(164, 209, 180, 0.18);
     color: #a4d1b4;
 }
 
-.wifi-disconnect-btn {
+.qs-disconnect-btn {
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -635,64 +775,35 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-disconnect-btn:hover {
+.qs-disconnect-btn:hover {
     background: rgba(250, 116, 111, 0.18);
     color: #fa746f;
 }
 
-/* --- Wi-Fi Full-Panel Authentication Overlay --- */
-.wifi-auth-view {
+/* Auth Overlay Page */
+.qs-auth-page {
     padding: 6px 12px 14px 12px;
 }
 
-.wifi-auth-nav {
-    padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 4px;
-}
-
-.wifi-auth-back-btn {
-    background: transparent;
-    border: none;
-    border-radius: 999px;
-    color: #dee8df;
-    font-size: 18px;
-    min-width: 32px;
-    min-height: 32px;
-    padding: 0;
-    transition: all 150ms ease;
-}
-
-.wifi-auth-back-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #a4d1b4;
-}
-
-.wifi-auth-nav-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #dee8df;
-}
-
-.wifi-auth-hero-icon {
+.qs-auth-icon {
     font-size: 38px;
     color: #a4d1b4;
     margin-bottom: 4px;
 }
 
-.wifi-auth-ssid {
+.qs-auth-ssid {
     font-size: 17px;
     font-weight: 700;
     color: #ffffff;
 }
 
-.wifi-auth-subtitle {
+.qs-auth-sub {
     font-size: 12px;
     color: #8d9990;
     font-weight: 500;
 }
 
-.wifi-auth-input-card {
+.qs-auth-input-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
@@ -700,7 +811,7 @@ switch.wifi-switch:checked slider {
     margin: 6px 0;
 }
 
-.wifi-auth-input-label {
+.qs-auth-input-label {
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.8px;
@@ -708,7 +819,7 @@ switch.wifi-switch:checked slider {
     margin-bottom: 4px;
 }
 
-.wifi-auth-entry {
+.qs-auth-entry {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
@@ -718,31 +829,31 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-auth-entry:focus {
+.qs-auth-entry:focus {
     border-color: #a4d1b4;
     background: rgba(0, 0, 0, 0.55);
     box-shadow: 0 0 0 1px rgba(164, 209, 180, 0.5);
 }
 
-.wifi-auth-status {
+.qs-auth-status {
     font-size: 12px;
     font-weight: 600;
     padding: 4px 8px;
 }
 
-.wifi-auth-status.error {
+.qs-auth-status.error {
     color: #fa746f;
 }
 
-.wifi-auth-status.connecting {
+.qs-auth-status.connecting {
     color: #a4d1b4;
 }
 
-.wifi-auth-actions {
+.qs-auth-actions {
     margin-top: 10px;
 }
 
-.wifi-auth-cancel-btn {
+.qs-auth-cancel-btn {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -753,12 +864,12 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-auth-cancel-btn:hover {
+.qs-auth-cancel-btn:hover {
     background: rgba(255, 255, 255, 0.12);
     color: #ffffff;
 }
 
-.wifi-auth-connect-btn {
+.qs-auth-connect-btn {
     background: #a4d1b4;
     border: none;
     border-radius: 12px;
@@ -769,306 +880,56 @@ switch.wifi-switch:checked slider {
     transition: all 150ms ease;
 }
 
-.wifi-auth-connect-btn:hover {
+.qs-auth-connect-btn:hover {
     background: #bbf0cb;
     box-shadow: 0 0 14px rgba(164, 209, 180, 0.45);
 }
 
 /* Empty / Scanning states */
-.wifi-empty {
+.qs-empty {
     padding: 40px 16px;
     color: #6e7870;
 }
 
-.wifi-empty-icon {
+.qs-empty-icon {
     font-size: 34px;
     margin-bottom: 8px;
     color: #414a43;
 }
 
-.wifi-empty-text {
+.qs-empty-text {
     font-size: 13px;
     font-weight: 600;
     color: #dee8df;
 }
 
-.wifi-empty-sub {
+.qs-empty-sub {
     font-size: 11px;
     color: #6e7870;
     margin-top: 2px;
 }
 
-.wifi-scanning {
+.qs-scanning {
     color: #a4aea5;
     font-size: 13px;
     padding: 20px;
 }
 
 /* Thin Custom Scrollbar */
-.wifi-scrolled-window scrollbar {
+.qs-scrolled-window scrollbar {
     background: transparent;
     border: none;
     min-width: 4px;
 }
 
-.wifi-scrolled-window scrollbar slider {
+.qs-scrolled-window scrollbar slider {
     background: rgba(255, 255, 255, 0.12);
     border-radius: 999px;
     min-width: 4px;
     border: none;
 }
 
-.wifi-scrolled-window scrollbar slider:hover {
-    background: rgba(164, 209, 180, 0.35);
-}
-
-/* =========================================================================
-   BLUETOOTH PANEL (M3 Expressive / Caelestia)
-   ========================================================================= */
-
-.bt-window {
-    background: transparent;
-}
-
-.bt-dropdown {
-    background: rgba(14, 19, 16, 0.95);
-    border: 1px solid rgba(164, 209, 180, 0.2);
-    border-radius: 24px;
-    padding: 16px;
-    min-width: 390px;
-    min-height: 460px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
-}
-
-/* Hero QuickSettings Module */
-.bt-hero-card {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 4px 4px 12px 4px;
-    margin-bottom: 4px;
-}
-
-.bt-hero-icon-box {
-    background: transparent;
-    border: none;
-    margin-right: 4px;
-}
-
-.bt-hero-icon {
-    font-size: 20px;
-    color: #a4d1b4;
-}
-
-.bt-hero-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.bt-hero-subtitle {
-    font-size: 11px;
-    font-weight: 500;
-    color: #8d9990;
-    margin-top: -1px;
-}
-
-.bt-hero-btn {
-    background: transparent;
-    border: none;
-    border-radius: 999px;
-    min-width: 32px;
-    min-height: 32px;
-    padding: 0;
-    color: #8d9990;
-    font-size: 15px;
-    transition: all 150ms ease;
-}
-
-.bt-hero-btn:hover {
-    background: rgba(164, 209, 180, 0.18);
-    color: #a4d1b4;
-}
-
-/* Material 3 Switch Component */
-switch.bt-switch {
-    background: rgba(255, 255, 255, 0.14);
-    border-radius: 999px;
-    border: none;
-    padding: 0;
-    outline: none;
-    box-shadow: none;
-    transition: all 200ms ease;
-}
-
-switch.bt-switch:checked {
-    background: #a4d1b4;
-}
-
-switch.bt-switch slider {
-    background: #dee8df;
-    border-radius: 999px;
-    margin: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-    transition: all 200ms ease;
-}
-
-switch.bt-switch:checked slider {
-    background: #0b0f0c;
-}
-
-/* Feedback banner */
-.bt-status-banner {
-    background: rgba(164, 209, 180, 0.12);
-    border: 1px solid rgba(164, 209, 180, 0.25);
-    border-radius: 999px;
-    padding: 4px 14px;
-    color: #a4d1b4;
-    font-size: 11px;
-    font-weight: 600;
-    margin: 4px 0;
-}
-
-/* Section Header */
-.bt-section-header {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    color: #6e7870;
-    margin: 8px 4px 4px 4px;
-}
-
-/* Device Items (Flat Caelestia List) */
-.bt-list-box {
-    margin-top: 2px;
-}
-
-.bt-item {
-    background: transparent;
-    border: none;
-    border-radius: 12px;
-    padding: 8px 10px;
-    margin: 2px 0;
-    transition: all 150ms ease;
-}
-
-.bt-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.bt-item.connected {
-    background: transparent;
-    border: none;
-}
-
-.bt-item.connected .bt-item-name {
-    color: #a4d1b4;
-    font-weight: 700;
-}
-
-.bt-icon-chip {
-    background: transparent;
-    border: none;
-    min-width: 24px;
-    min-height: 24px;
-}
-
-.bt-item-icon {
-    font-size: 18px;
-}
-
-.bt-item-name {
-    color: #dee8df;
-    font-weight: 500;
-    font-size: 13px;
-}
-
-.bt-connected-icon {
-    color: #a4d1b4;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.bt-paired-icon {
-    color: #6e7870;
-    font-size: 12px;
-}
-
-.bt-item-battery {
-    color: #8d9990;
-    font-size: 11px;
-    font-weight: 500;
-}
-
-.bt-connect-btn {
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #8d9990;
-    font-size: 16px;
-    padding: 4px 8px;
-    transition: all 150ms ease;
-}
-
-.bt-connect-btn:hover {
-    background: rgba(164, 209, 180, 0.18);
-    color: #a4d1b4;
-}
-
-.bt-disconnect-btn {
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #fa746f;
-    font-size: 16px;
-    padding: 4px 8px;
-    transition: all 150ms ease;
-}
-
-.bt-disconnect-btn:hover {
-    background: rgba(250, 116, 111, 0.18);
-    color: #fa746f;
-}
-
-/* Empty / Scanning states */
-.bt-empty {
-    padding: 40px 16px;
-    color: #6e7870;
-}
-
-.bt-empty-icon {
-    font-size: 34px;
-    margin-bottom: 8px;
-    color: #414a43;
-}
-
-.bt-empty-text {
-    font-size: 13px;
-    font-weight: 600;
-    color: #dee8df;
-}
-
-.bt-empty-sub {
-    font-size: 11px;
-    color: #6e7870;
-    margin-top: 2px;
-}
-
-/* Thin Custom Scrollbar */
-.bt-scrolled-window scrollbar {
-    background: transparent;
-    border: none;
-    min-width: 4px;
-}
-
-.bt-scrolled-window scrollbar slider {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 999px;
-    min-width: 4px;
-    border: none;
-}
-
-.bt-scrolled-window scrollbar slider:hover {
+.qs-scrolled-window scrollbar slider:hover {
     background: rgba(164, 209, 180, 0.35);
 }
 "#;
