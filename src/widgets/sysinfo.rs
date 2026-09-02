@@ -159,7 +159,7 @@ pub fn battery_icon(percent: u8) -> &'static str {
 }
 
 /// Reads CPU usage and memory figures. Returns `(cpu_pct, mem_used_mib, mem_total_mib)`.
-fn sys_stats() -> (u8, u64, u64) {
+pub(crate) fn sys_stats() -> (u8, u64, u64) {
     thread_local! {
         static SYS: std::cell::RefCell<System> = std::cell::RefCell::new(System::new());
     }

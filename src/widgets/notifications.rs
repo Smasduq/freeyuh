@@ -232,6 +232,8 @@ impl NotificationWidget {
     /// Show a toast card for `n`, auto-dismissing after a timeout.
     fn present_toast(&mut self, n: &Notification) {
         let card = self.make_card(n, false);
+        // Trigger the slide-in keyframe as soon as the widget is in the tree.
+        card.add_css_class("toast-entering");
         self.toasts_list.append(&card);
         self.toast_window.present();
 
@@ -242,10 +244,21 @@ impl NotificationWidget {
             _ => TOAST_TIMEOUT,
         };
         glib::timeout_add_local(timeout, move || {
-            toasts_list.remove(&card);
-            if toasts_list.observe_children().n_items() == 0 {
-                toast_window.hide();
-            }
+            // Start the slide-out animation, then remove after it finishes.
+            card.remove_css_class("toast-entering");
+            card.add_css_class("toast-leaving");
+
+            let card2 = card.clone();
+            let toasts_list2 = toasts_list.clone();
+            let toast_window2 = toast_window.clone();
+            glib::timeout_add_local(Duration::from_millis(210), move || {
+                toasts_list2.remove(&card2);
+                if toasts_list2.observe_children().n_items() == 0 {
+                    toast_window2.hide();
+                }
+                glib::ControlFlow::Break
+            });
+
             glib::ControlFlow::Break
         });
     }
