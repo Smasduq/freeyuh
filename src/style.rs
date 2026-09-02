@@ -406,25 +406,28 @@ window {
 
 /* --- Notification Bell Island --- */
 .bell {
-    background: rgba(14, 19, 16, 0.88);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(4, 8, 5, 0.90);
+    border: 1px solid rgba(0, 230, 118, 0.12);
     border-radius: 999px;
     padding: 4px 10px;
     margin: 3px 0 3px 3px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-    color: #a4aea5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #4a6655;
     font-size: 14px;
     transition: all 180ms ease;
 }
 
 .bell:hover {
-    background: rgba(22, 30, 25, 0.95);
-    border-color: rgba(164, 209, 180, 0.3);
-    color: #dee8df;
+    background: rgba(6, 14, 9, 0.96);
+    border-color: rgba(0, 230, 118, 0.35);
+    color: #00e676;
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.18);
 }
 
 .bell.has-unread {
-    color: #a4d1b4;
+    color: #00e676;
+    border-color: rgba(0, 230, 118, 0.3);
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
 }
 
 .bell-icon {
@@ -432,13 +435,14 @@ window {
 }
 
 .notif-badge {
-    background: #a4d1b4;
-    color: #141b17;
+    background: #00e676;
+    color: #030805;
     font-size: 10px;
-    font-weight: bold;
+    font-weight: 900;
     border-radius: 999px;
     padding: 0 5px;
     min-width: 14px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* --- Notification Center Dropdown --- */
@@ -447,57 +451,66 @@ window {
 }
 
 .notif-dropdown {
-    background: rgba(12, 17, 23, 0.98);
-    border: 1px solid rgba(130, 207, 218, 0.24);
+    background: rgba(3, 8, 5, 0.98);
+    border: 1px solid rgba(0, 230, 118, 0.18);
     border-radius: 20px;
     padding: 14px;
     min-width: 420px;
     min-height: 540px;
-    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.9),
+        0 0 40px rgba(0, 230, 118, 0.06),
+        0 0 0 1px rgba(0, 230, 118, 0.04) inset;
+    font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", monospace;
 }
 
 .notif-header {
     padding: 5px 6px 11px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 230, 118, 0.12);
     margin-bottom: 8px;
 }
 
 .notif-header-title {
-    font-weight: bold;
-    font-size: 15px;
-    color: #dee8df;
+    font-weight: 700;
+    font-size: 14px;
+    color: #00e676;
+    letter-spacing: 0.5px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .notif-clear-btn {
-    background: rgba(130, 207, 218, 0.1);
-    border: 1px solid rgba(130, 207, 218, 0.16);
+    background: rgba(0, 230, 118, 0.07);
+    border: 1px solid rgba(0, 230, 118, 0.15);
     border-radius: 999px;
     padding: 4px 10px;
-    color: #a4aea5;
+    color: #4a6655;
     font-size: 11px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     transition: all 150ms ease;
 }
 
 .notif-clear-btn:hover {
-    background: rgba(250, 116, 111, 0.16);
-    border-color: rgba(250, 116, 111, 0.7);
-    color: #ff9388;
+    background: rgba(250, 82, 82, 0.14);
+    border-color: rgba(250, 82, 82, 0.5);
+    color: #ff6b6b;
 }
 
 .notif-empty {
     padding: 24px 16px;
-    color: #6e7870;
+    color: #1e3328;
 }
 
 .notif-empty-icon {
     font-size: 28px;
     margin-bottom: 4px;
-    color: #414a43;
+    color: #1a2e22;
 }
 
 .notif-empty-text {
     font-size: 13px;
     font-weight: 500;
+    color: #2e4d3a;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* --- Notification Keyframe Animations --- */
@@ -530,40 +543,46 @@ window {
 
 /* Base card (used inside the notification center history) */
 .notif-toast {
-    background: rgba(14, 20, 17, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 4px solid #a4d1b4;
-    border-radius: 14px;
+    background: rgba(4, 10, 6, 0.97);
+    border: 1px solid rgba(0, 230, 118, 0.14);
+    border-left: 3px solid rgba(0, 230, 118, 0.6);
+    border-radius: 12px;
     padding: 11px 13px;
-    color: #dee8df;
+    color: #c8ffd4;
     margin: 3px 0;
     transition: background 150ms ease, border-color 150ms ease;
+    font-family: "JetBrainsMono Nerd Font", "Adwaita Sans", monospace;
 }
 
-/* Live toast popup — distinct freeyuh island look */
+.notif-toast:hover {
+    background: rgba(6, 14, 9, 0.99);
+    border-color: rgba(0, 230, 118, 0.28);
+}
+
+/* Live toast popup — Caelestia neon glass */
 .toast-window .notif-toast {
-    background: rgba(10, 16, 12, 0.97);
-    border: 1px solid rgba(164, 209, 180, 0.22);
-    border-left: 4px solid #a4d1b4;
-    border-radius: 16px;
+    background: rgba(3, 8, 5, 0.98);
+    border: 1px solid rgba(0, 230, 118, 0.22);
+    border-left: 3px solid #00e676;
+    border-radius: 14px;
     box-shadow:
-        0 16px 40px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-        0 0 18px rgba(164, 209, 180, 0.08);
+        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(0, 230, 118, 0.06) inset,
+        0 0 24px rgba(0, 230, 118, 0.10);
 }
 
-/* Critical urgency — red accent */
+/* Critical urgency — red accent, still Caelestia dark */
 .notif-toast.critical {
-    border-left: 4px solid #fa746f;
-    border-color: rgba(250, 116, 111, 0.35);
+    border-left: 3px solid #ff4444;
+    border-color: rgba(255, 68, 68, 0.28);
     box-shadow:
-        0 16px 40px rgba(0, 0, 0, 0.75),
-        0 0 18px rgba(250, 116, 111, 0.14);
+        0 20px 50px rgba(0, 0, 0, 0.9),
+        0 0 24px rgba(255, 68, 68, 0.16);
 }
 
 /* Slide-in animation applied when toast is first shown */
 .toast-window .notif-toast.toast-entering {
-    animation: toast-in 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: toast-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* Slide-out animation applied just before the widget is removed */
@@ -572,53 +591,59 @@ window {
     pointer-events: none;
 }
 
-/* App name chip */
+/* App name chip — neon green monospace tag */
 .notif-app {
-    font-size: 10px;
-    font-weight: 800;
+    font-size: 9px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #7ad9bc;
-    background: rgba(122, 217, 188, 0.14);
-    border: 1px solid rgba(122, 217, 188, 0.2);
+    letter-spacing: 1px;
+    color: #00e676;
+    background: rgba(0, 230, 118, 0.10);
+    border: 1px solid rgba(0, 230, 118, 0.22);
     padding: 1px 7px;
-    border-radius: 6px;
+    border-radius: 4px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 /* Close button inside notification center cards */
 .notif-card-close {
     background: transparent;
     border: none;
-    color: #6e7870;
+    color: #1e4030;
     font-size: 11px;
     padding: 1px 4px;
     border-radius: 4px;
+    transition: all 120ms ease;
 }
 
 .notif-card-close:hover {
-    background: rgba(255, 255, 255, 0.10);
-    color: #dee8df;
+    background: rgba(255, 68, 68, 0.12);
+    color: #ff6b6b;
 }
 
 /* Notification summary / title */
 .notif-title {
     font-weight: 700;
-    font-size: 14px;
-    color: #ffffff;
-    margin-top: 3px;
+    font-size: 13px;
+    color: #e8fff2;
+    margin-top: 4px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    letter-spacing: 0.2px;
 }
 
 /* Notification body text */
 .notif-body {
     font-size: 12px;
-    color: #8d9990;
-    margin-top: 1px;
-    line-height: 1.45;
+    color: #3d6b52;
+    margin-top: 2px;
+    line-height: 1.5;
+    font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
 .notif-center scrollbar {
     background: transparent;
 }
+
 
 /* =========================================================================
    UNIFIED QUICK SETTINGS / CONTROL CENTER PANEL (GNOME / Caelestia M3)
@@ -703,6 +728,8 @@ window {
     font-size: 16px;
     color: #dee8df;
     padding: 0;
+    halign: center;
+    valign: center;
     transition: all 150ms ease;
 }
 
@@ -764,11 +791,11 @@ window {
 }
 
 .qs-slider-mute-btn {
-    background: transparent;
+    background: rgba(130, 207, 218, 0.12);
     border: none;
     border-radius: 999px;
-    min-width: 32px;
-    min-height: 32px;
+    min-width: 38px;
+    min-height: 38px;
     font-size: 16px;
     color: #82cfd7;
     padding: 0;
@@ -780,7 +807,12 @@ window {
 }
 
 .qs-slider-mute-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(130, 207, 218, 0.24);
+}
+
+.qs-slider-icon {
+    halign: center;
+    valign: center;
 }
 
 .qs-volume-scale trough {
