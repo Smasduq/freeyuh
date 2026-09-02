@@ -1,4 +1,4 @@
-//! Unix Domain Socket IPC for Freeyuh.
+//! Unix Domain Socket IPC for iFreeYuh.
 //!
 //! Enables external commands (e.g. Hyprland hotkeys or scripts) to trigger
 //! shell actions like toggling the Quick Settings or Notification Center.
@@ -10,21 +10,21 @@ use std::sync::mpsc::Sender;
 
 use crate::events::Event;
 
-/// Returns the standard path for the Freeyuh IPC socket.
+/// Returns the standard path for the iFreeYuh IPC socket.
 pub fn socket_path() -> PathBuf {
     if let Ok(runtime_dir) = std::env::var("XDG_RUNTIME_DIR") {
-        PathBuf::from(runtime_dir).join("freeyuh.sock")
+        PathBuf::from(runtime_dir).join("ifreeyuh.sock")
     } else {
         let user = std::env::var("USER").unwrap_or_else(|_| "user".into());
-        PathBuf::from(format!("/tmp/freeyuh-{user}.sock"))
+        PathBuf::from(format!("/tmp/ifreeyuh-{user}.sock"))
     }
 }
 
-/// Send a command to the running Freeyuh daemon.
+/// Send a command to the running iFreeYuh daemon.
 pub fn send_command(cmd: &str) -> Result<String, String> {
     let path = socket_path();
     let mut stream = UnixStream::connect(&path)
-        .map_err(|e| format!("Could not connect to Freeyuh daemon at {:?}: {}", path, e))?;
+        .map_err(|e| format!("Could not connect to iFreeYuh daemon at {:?}: {}", path, e))?;
 
     writeln!(stream, "{}", cmd.trim())
         .map_err(|e| format!("Failed to send command: {}", e))?;

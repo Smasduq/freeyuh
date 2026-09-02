@@ -115,8 +115,8 @@ impl NotificationService {
     /// Identifies this daemon to clients.
     async fn get_server_information(&self) -> (String, String, String, String) {
         (
-            "freeyuh".into(),
-            "freeyuh".into(),
+            "iFreeYuh".into(),
+            "iFreeYuh".into(),
             env!("CARGO_PKG_VERSION").into(),
             "1.2".into(),
         )

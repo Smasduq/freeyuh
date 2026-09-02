@@ -9,7 +9,7 @@ mod widgets;
 use gtk4::prelude::*;
 use gtk4::Application;
 
-const APP_ID: &str = "dev.freeyuh.shell";
+const APP_ID: &str = "dev.ifreeyuh.shell";
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
@@ -19,20 +19,20 @@ fn main() {
             let cmd = args[1..].join(" ");
             match cmd.as_str() {
                 "--help" | "-h" | "help" => {
-                    println!("Freeyuh Desktop Shell Controller");
+                    println!("iFreeYuh Desktop Shell Controller");
                     println!("Usage:");
-                    println!("  freeyuh                             Launch shell daemon");
-                    println!("  freeyuh toggle-launcher / run       Toggle Spotlight App Launcher");
-                    println!("  freeyuh toggle-powermenu / power    Toggle Power & Session Menu");
-                    println!("  freeyuh toggle-qs / toggle-quicksettings   Toggle Quick Settings / Control Center");
-                    println!("  freeyuh toggle-notifs / notifs      Toggle Notification Center");
-                    println!("  freeyuh reload / reload-style       Reload CSS style");
-                    println!("  freeyuh mute / volume-mute          Toggle audio mute");
-                    println!("  freeyuh volume-set <0-100>          Set audio volume level");
-                    println!("  freeyuh wifi-toggle                 Toggle Wi-Fi on/off");
-                    println!("  freeyuh bt-toggle                   Toggle Bluetooth on/off");
-                    println!("  freeyuh brightness-set <1-100>      Set screen brightness percentage");
-                    println!("  freeyuh brightness-up / down        Increase/decrease brightness (+-5%)");
+                    println!("  ifreeyuh                             Launch shell daemon");
+                    println!("  ifreeyuh toggle-launcher / run       Toggle Spotlight App Launcher");
+                    println!("  ifreeyuh toggle-powermenu / power    Toggle Power & Session Menu");
+                    println!("  ifreeyuh toggle-qs / toggle-quicksettings   Toggle Quick Settings / Control Center");
+                    println!("  ifreeyuh toggle-notifs / notifs      Toggle Notification Center");
+                    println!("  ifreeyuh reload / reload-style       Reload CSS style");
+                    println!("  ifreeyuh mute / volume-mute          Toggle audio mute");
+                    println!("  ifreeyuh volume-set <0-100>          Set audio volume level");
+                    println!("  ifreeyuh wifi-toggle                 Toggle Wi-Fi on/off");
+                    println!("  ifreeyuh bt-toggle                   Toggle Bluetooth on/off");
+                    println!("  ifreeyuh brightness-set <1-100>      Set screen brightness percentage");
+                    println!("  ifreeyuh brightness-up / down        Increase/decrease brightness (+-5%)");
                     return;
                 }
                 _ => {

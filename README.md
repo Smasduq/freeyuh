@@ -1,8 +1,8 @@
-# freeyuh
+# iFreeYuh
 
 A minimal, fast Wayland status bar for [Hyprland](https://hyprland.org/), written in Rust with GTK4 and `gtk4-layer-shell`.
 
-![freeyuh bar screenshot](assets/screenshot.png)
+![iFreeYuh bar screenshot](assets/screenshot.png)
 
 ---
 
@@ -59,15 +59,15 @@ cargo build --release
 ## Running
 
 ```bash
-./target/release/freeyuh
+./target/release/ifreeyuh
 ```
 
-Freeyuh registers itself as a Wayland layer-shell surface on startup. It expects Hyprland to be running (IPC socket at `$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock`).
+iFreeYuh registers itself as a Wayland layer-shell surface on startup. It expects Hyprland to be running (IPC socket at `$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock`).
 
 To autostart with Hyprland, add to `hyprland.conf`:
 
 ```ini
-exec-once = /path/to/freeyuh
+exec-once = /path/to/ifreeyuh
 ```
 
 ---

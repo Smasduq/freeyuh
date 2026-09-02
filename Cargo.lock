@@ -364,22 +364,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d45db016d36b838f563236e9193d0ee6ce38f3f68b6c94e914b4929c96bbb890"
 
 [[package]]
-name = "freeyuh"
-version = "0.1.0"
-dependencies = [
- "async-lock",
- "chrono",
- "glib",
- "gtk4",
- "gtk4-layer-shell",
- "serde",
- "serde_json",
- "sysinfo",
- "tokio",
- "zbus",
-]
-
-[[package]]
 name = "futures-channel"
 version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -805,6 +789,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f31827a206f56af32e590ba56d5d2d085f558508192593743f16b2306495269f"
 dependencies = [
  "cc",
+]
+
+[[package]]
+name = "ifreeyuh"
+version = "0.1.0"
+dependencies = [
+ "async-lock",
+ "chrono",
+ "glib",
+ "gtk4",
+ "gtk4-layer-shell",
+ "serde",
+ "serde_json",
+ "sysinfo",
+ "tokio",
+ "zbus",
 ]
 
 [[package]]

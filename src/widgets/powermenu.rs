@@ -136,7 +136,7 @@ impl PowerMenuWidget {
 
         let user = std::env::var("USER").unwrap_or_else(|_| "User".to_string());
         let host = std::fs::read_to_string("/etc/hostname")
-            .unwrap_or_else(|_| "Freeyuh".to_string())
+            .unwrap_or_else(|_| "iFreeYuh".to_string())
             .trim()
             .to_string();
 
