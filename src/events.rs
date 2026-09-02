@@ -33,6 +33,8 @@ pub enum Event {
     ActiveWindow(Option<String>),
     /// Network connection state or SSID changed.
     NetworkChanged,
+    /// Bluetooth adapter state or connected devices changed.
+    BluetoothChanged,
     /// Show the notification center window.
     ShowNotificationCenter,
     /// Hide the notification center window.
@@ -117,6 +119,7 @@ pub fn spawn_tickers(tx: Sender<Event>) -> EventProducer {
             }
             if samples % 6 == 0 {
                 let _ = tx.send(Event::NetworkChanged);
+                let _ = tx.send(Event::BluetoothChanged);
             }
             std::thread::sleep(std::time::Duration::from_secs(1));
         }
