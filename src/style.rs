@@ -893,6 +893,66 @@ window {
     border-radius: 999px;
     min-width: 32px;
     min-height: 32px;
+
+.qs-circular-controls {
+    margin: 2px 0 4px;
+}
+
+.qs-circular-card {
+    background: rgba(0, 230, 118, 0.04);
+    border: 1px solid rgba(0, 230, 118, 0.12);
+    border-radius: 18px;
+    padding: 10px 8px;
+}
+
+.qs-circular-control {
+    background: rgba(0, 230, 118, 0.10);
+    border: 1px solid rgba(0, 230, 118, 0.18);
+    border-radius: 999px;
+    min-width: 92px;
+    min-height: 92px;
+    padding: 0;
+    color: #00e676;
+    transition: all 150ms ease;
+}
+
+.qs-circular-control:hover {
+    background: rgba(0, 230, 118, 0.18);
+    border-color: rgba(0, 230, 118, 0.45);
+    box-shadow: 0 0 18px rgba(0, 230, 118, 0.16);
+}
+
+.qs-circular-icon {
+    font-size: 25px;
+    color: #00e676;
+}
+
+.qs-circular-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #c8ffd4;
+}
+
+.qs-header-actions {
+    margin-left: 4px;
+}
+
+.qs-header-action {
+    background: rgba(0, 230, 118, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.14);
+    border-radius: 999px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 0;
+    color: #7ad9bc;
+    font-size: 15px;
+    transition: all 150ms ease;
+}
+
+.qs-header-action:hover {
+    background: rgba(0, 230, 118, 0.18);
+    color: #00e676;
+}
     font-size: 18px;
     color: #3d6b52;
     padding: 0;
