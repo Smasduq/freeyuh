@@ -74,7 +74,7 @@ pub fn build(app: &Application) {
     right.set_margin_end(8);
 
     let (sys_box, sys_labels) = widgets::sysinfo::create();
-    let (qs_btn, qs_labels, qs_window, qs_reload) = widgets::quicksettings::create(app);
+    let (qs_btn, qs_labels, qs_window, qs_reload) = widgets::quicksettings::create(app, tx.clone());
     let (mut notif_widget, bell) = widgets::notifications::NotificationWidget::new(app, tx.clone());
     let (mut launcher_widget, _launcher_win) = widgets::launcher::LauncherWidget::new(app);
     let (mut powermenu_widget, _powermenu_win) = widgets::powermenu::PowerMenuWidget::new(app);

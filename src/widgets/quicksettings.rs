@@ -6,7 +6,8 @@
 use gtk4::pango::EllipsizeMode;
 use gtk4::prelude::*;
 use gtk4::{
-    Align, Application, ApplicationWindow, Box, Button, EventControllerMotion, Label, Orientation,
+    Align, Application, ApplicationWindow, Box, Button, EventControllerMotion,
+    EventControllerScroll, EventControllerScrollFlags, GestureClick, Label, Orientation,
     PasswordEntry, Scale, ScrolledWindow, Stack, StackTransitionType, Switch,
 };
 use gtk4_layer_shell::{Edge, KeyboardMode, Layer, LayerShell};
@@ -14,6 +15,7 @@ use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::sync::mpsc;
 use std::time::Duration;
+use std::process::Command;
 
 use crate::services::audio;
 use crate::services::bluetooth::{self, BluetoothDevice, BluetoothState};
@@ -33,7 +35,10 @@ pub struct QuickSettingsLabels {
 /// Creates the unified Quick Settings pill button on the bar and its Control Center panel.
 ///
 /// Returns `(pill_button, pill_labels, qs_window, reload_fn)`.
-pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWindow, Rc<dyn Fn()>) {
+pub fn create(
+    app: &Application,
+    tx: mpsc::Sender<crate::events::Event>,
+) -> (Button, QuickSettingsLabels, ApplicationWindow, Rc<dyn Fn()>) {
     let button = Button::new();
     button.add_css_class("quicksettings-pill");
     button.set_cursor_from_name(Some("pointer"));
@@ -109,6 +114,33 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
     header_title.set_hexpand(true);
     header_box.append(&header_title);
 
+    let header_actions = Box::new(Orientation::Horizontal, 6);
+    header_actions.add_css_class("qs-header-actions");
+
+    let settings_btn = Button::new();
+    settings_btn.set_label("󰒓");
+    settings_btn.add_css_class("qs-header-action");
+    settings_btn.set_tooltip_text(Some("Open system settings"));
+    settings_btn.set_cursor_from_name(Some("pointer"));
+    settings_btn.connect_clicked(move |_| {
+        if Command::new("systemsettings").spawn().is_err() {
+            let _ = Command::new("gnome-control-center").spawn();
+        }
+    });
+    header_actions.append(&settings_btn);
+
+    let power_btn = Button::new();
+    power_btn.set_label("󰐥");
+    power_btn.add_css_class("qs-header-action");
+    power_btn.set_tooltip_text(Some("Power and session menu"));
+    power_btn.set_cursor_from_name(Some("pointer"));
+    let tx_power = tx.clone();
+    power_btn.connect_clicked(move |_| {
+        let _ = tx_power.send(crate::events::Event::TogglePowerMenu);
+    });
+    header_actions.append(&power_btn);
+    header_box.append(&header_actions);
+
     let header_battery = Label::new(None);
     header_battery.set_use_markup(true);
     header_battery.add_css_class("qs-header-battery");
@@ -117,65 +149,120 @@ pub fn create(app: &Application) -> (Button, QuickSettingsLabels, ApplicationWin
 
     main_page.append(&header_box);
 
-    // Audio and brightness controls lead the overview, with connectivity below.
-    let volume_card = Box::new(Orientation::Horizontal, 10);
-    volume_card.add_css_class("qs-slider-card");
-    volume_card.set_valign(Align::Center);
+    // Circular controllers lead the overview, with connectivity below.
+    let controls_box = Box::new(Orientation::Horizontal, 12);
+    controls_box.add_css_class("qs-circular-controls");
+    controls_box.set_homogeneous(true);
 
+    let volume_card = Box::new(Orientation::Vertical, 4);
+    volume_card.add_css_class("qs-circular-card");
     let mute_btn = Button::new();
-    mute_btn.add_css_class("qs-slider-mute-btn");
+    mute_btn.add_css_class("qs-circular-control");
     mute_btn.set_cursor_from_name(Some("pointer"));
-    let mute_icon = Label::new(None);
-    mute_icon.set_use_markup(true);
-    mute_icon.set_markup("󰕾");
-    mute_icon.set_halign(Align::Center);
-    mute_icon.set_valign(Align::Center);
-    mute_btn.set_child(Some(&mute_icon));
-    volume_card.append(&mute_btn);
-
-    let volume_scale = Scale::with_range(Orientation::Horizontal, 0.0, 100.0, 1.0);
-    volume_scale.add_css_class("qs-volume-scale");
-    volume_scale.set_hexpand(true);
-    volume_scale.set_draw_value(false);
-    if let Some(state) = audio::query() {
-        volume_scale.set_value(state.volume_percent as f64);
-    }
-    volume_card.append(&volume_scale);
-
+    let volume_content = Box::new(Orientation::Vertical, 1);
+    volume_content.set_halign(Align::Center);
+    volume_content.set_valign(Align::Center);
+    let mute_icon = Label::new(Some("󰕾"));
+    mute_icon.add_css_class("qs-circular-icon");
     let volume_pct_label = Label::new(Some("80%"));
-    volume_pct_label.add_css_class("qs-slider-pct");
-    volume_card.append(&volume_pct_label);
-    main_page.append(&volume_card);
+    volume_pct_label.add_css_class("qs-circular-value");
+    volume_content.append(&mute_icon);
+    volume_content.append(&volume_pct_label);
+    mute_btn.set_child(Some(&volume_content));
+    volume_card.append(&mute_btn);
+    controls_box.append(&volume_card);
 
-    let bright_card = Box::new(Orientation::Horizontal, 10);
-    bright_card.add_css_class("qs-slider-card");
-    bright_card.set_valign(Align::Center);
-
-    let bright_icon_btn = Box::new(Orientation::Horizontal, 0);
-    bright_icon_btn.add_css_class("qs-slider-mute-btn");
-    bright_icon_btn.set_halign(Align::Center);
-    bright_icon_btn.set_valign(Align::Center);
+    let bright_card = Box::new(Orientation::Vertical, 4);
+    bright_card.add_css_class("qs-circular-card");
+    let bright_icon_btn = Button::new();
+    bright_icon_btn.add_css_class("qs-circular-control");
+    bright_icon_btn.set_cursor_from_name(Some("pointer"));
+    let bright_content = Box::new(Orientation::Vertical, 1);
+    bright_content.set_halign(Align::Center);
+    bright_content.set_valign(Align::Center);
     let bright_icon_lbl = Label::new(Some("󰃠"));
-    bright_icon_lbl.add_css_class("qs-slider-icon");
-    bright_icon_lbl.set_halign(Align::Center);
-    bright_icon_lbl.set_valign(Align::Center);
-    bright_icon_btn.append(&bright_icon_lbl);
-    bright_card.append(&bright_icon_btn);
-
-    let bright_scale = Scale::with_range(Orientation::Horizontal, 1.0, 100.0, 1.0);
-    bright_scale.add_css_class("qs-volume-scale");
-    bright_scale.add_css_class("qs-brightness-scale");
-    bright_scale.set_hexpand(true);
-    bright_scale.set_draw_value(false);
+    bright_icon_lbl.add_css_class("qs-circular-icon");
     let initial_b = crate::services::brightness::query().unwrap_or(80);
+    let bright_pct_label = Label::new(Some(&format!("{initial_b}%")));
+    bright_pct_label.add_css_class("qs-circular-value");
+    bright_content.append(&bright_icon_lbl);
+    bright_content.append(&bright_pct_label);
+    bright_icon_btn.set_child(Some(&bright_content));
+    bright_card.append(&bright_icon_btn);
+    controls_box.append(&bright_card);
+
+    main_page.append(&controls_box);
+
+    let initial_volume = audio::query().map(|state| state.volume_percent).unwrap_or(80);
+    let volume_scale = Scale::with_range(Orientation::Horizontal, 0.0, 100.0, 1.0);
+    volume_scale.set_value(initial_volume as f64);
+    volume_pct_label.set_text(&format!("{initial_volume}%"));
+    let bright_scale = Scale::with_range(Orientation::Horizontal, 1.0, 100.0, 1.0);
     bright_scale.set_value(initial_b as f64);
     bright_icon_lbl.set_text(crate::services::brightness::icon(initial_b));
-    bright_card.append(&bright_scale);
 
-    let bright_pct_label = Label::new(Some(&format!("{initial_b}%")));
-    bright_pct_label.add_css_class("qs-slider-pct");
-    bright_card.append(&bright_pct_label);
-    main_page.append(&bright_card);
+    // Vertical scroll changes by 5%; double-clicking the upper/lower half seeks up/down.
+    let volume_value = Rc::new(Cell::new(initial_volume as i32));
+    let volume_value_scroll = volume_value.clone();
+    let volume_pct_scroll = volume_pct_label.clone();
+    let volume_scale_scroll = volume_scale.clone();
+    let volume_scroll = EventControllerScroll::new(EventControllerScrollFlags::VERTICAL);
+    volume_scroll.connect_scroll(move |_, _, dy| {
+        let next = (volume_value_scroll.get() - (dy.signum() as i32 * 5)).clamp(0, 100);
+        volume_value_scroll.set(next);
+        volume_pct_scroll.set_text(&format!("{next}%"));
+        volume_scale_scroll.set_value(next as f64);
+        gtk4::glib::Propagation::Stop
+    });
+    mute_btn.add_controller(volume_scroll);
+
+    let volume_value_click = volume_value.clone();
+    let volume_pct_click = volume_pct_label.clone();
+    let volume_scale_click = volume_scale.clone();
+    let volume_click = GestureClick::new();
+    volume_click.set_button(0);
+    volume_click.connect_pressed(move |_, presses, _, y| {
+        if presses == 2 {
+            let next = (volume_value_click.get() + if y < 42.0 { 5 } else { -5 }).clamp(0, 100);
+            volume_value_click.set(next);
+            volume_pct_click.set_text(&format!("{next}%"));
+            volume_scale_click.set_value(next as f64);
+        }
+    });
+    mute_btn.add_controller(volume_click);
+
+    let bright_value = Rc::new(Cell::new(initial_b as i32));
+    let bright_value_scroll = bright_value.clone();
+    let bright_pct_scroll = bright_pct_label.clone();
+    let bright_icon_scroll = bright_icon_lbl.clone();
+    let bright_scale_scroll = bright_scale.clone();
+    let bright_scroll = EventControllerScroll::new(EventControllerScrollFlags::VERTICAL);
+    bright_scroll.connect_scroll(move |_, _, dy| {
+        let next = (bright_value_scroll.get() - (dy.signum() as i32 * 5)).clamp(1, 100);
+        bright_value_scroll.set(next);
+        bright_pct_scroll.set_text(&format!("{next}%"));
+        bright_icon_scroll.set_text(crate::services::brightness::icon(next as u8));
+        bright_scale_scroll.set_value(next as f64);
+        gtk4::glib::Propagation::Stop
+    });
+    bright_icon_btn.add_controller(bright_scroll);
+
+    let bright_value_click = bright_value.clone();
+    let bright_pct_click = bright_pct_label.clone();
+    let bright_icon_click = bright_icon_lbl.clone();
+    let bright_scale_click = bright_scale.clone();
+    let bright_click = GestureClick::new();
+    bright_click.set_button(0);
+    bright_click.connect_pressed(move |_, presses, _, y| {
+        if presses == 2 {
+            let next = (bright_value_click.get() + if y < 42.0 { 5 } else { -5 }).clamp(1, 100);
+            bright_value_click.set(next);
+            bright_pct_click.set_text(&format!("{next}%"));
+            bright_icon_click.set_text(crate::services::brightness::icon(next as u8));
+            bright_scale_click.set_value(next as f64);
+        }
+    });
+    bright_icon_btn.add_controller(bright_click);
 
     // Quick Tiles Grid (Wi-Fi & Bluetooth side-by-side or stacked tiles)
     let tiles_box = Box::new(Orientation::Horizontal, 10);
